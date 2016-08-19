@@ -12,7 +12,7 @@ namespace Grammophone.DataAccess.EntityFramework
 	/// <summary>
 	/// Use this domain container implementation if you plan to expose 
 	/// entity sets as <see cref="IEntitySet{E}"/>. It requires an underlying
-	/// <see cref="EFDomainContainer"/> which exposes entity sets as <see cref="IDbSet{E}"/>
+	/// <see cref="EFDomainContainer"/> which exposes entity sets as <see cref="DbSet{E}"/>
 	/// which you should adapt using <see cref="EFSet{E}"/>.
 	/// </summary>
 	public abstract class EFDomainContainerAdapter : IDomainContainer

@@ -14,6 +14,8 @@ namespace Grammophone.DataAccess.EntityFramework
 	/// An Entity Framework <see cref="DbContext"/> which also 
 	/// implements <see cref="IDomainContainer"/>. This means that the entity sets whould be defined as
 	/// Entity Framework's <see cref="ISet{T}"/> rather than <see cref="IEntitySet{E}"/>.
+	/// If <see cref="IEntitySet{E}"/>'s are required, adapt an intance of this class
+	/// using <see cref="EFDomainContainerAdapter"/>.
 	/// </summary>
 	public abstract class EFDomainContainer : DbContext, IDomainContainer
 	{
