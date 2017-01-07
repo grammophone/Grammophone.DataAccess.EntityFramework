@@ -51,9 +51,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EFCollectionEntry.cs" />
+    <Compile Include="EFComplexPropertyEntry.cs" />
     <Compile Include="EFDomainContainer.cs" />
     <Compile Include="EFDomainContainerAdapter.cs" />
+    <Compile Include="EFEntityEntry.cs" />
+    <Compile Include="EFMemberEntry.cs" />
+    <Compile Include="EFPropertyEntry.cs" />
     <Compile Include="EFQuery.cs" />
+    <Compile Include="EFReferenceEntry.cs" />
     <Compile Include="EFSet.cs" />
     <Compile Include="EFTransaction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

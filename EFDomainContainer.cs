@@ -115,6 +115,40 @@ namespace Grammophone.DataAccess.EntityFramework
 		#region IDomainContainer members not already provided by DbContext
 
 		/// <summary>
+		/// Gets an <see cref="IEntityEntry{E}"/> object for the given entity 
+		/// providing access to information about the entity 
+		/// and the ability to perform actions on the entity.
+		/// This method explictly implements the <see cref="IDomainContainer.Entry{E}(E)"/> method
+		/// by wrapping and abstracting the <see cref="DbContext.Entry{TEntity}(TEntity)"/> method.
+		/// </summary>
+		/// <typeparam name="E">The type of the entity.</typeparam>
+		/// <param name="entity">The entity.</param>
+		/// <returns>Returns the entry for the entity.</returns>
+		public IEntityEntry<E> GetEntry<E>(E entity)
+			where E : class
+		{
+			if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+			var underlyingEntityEntry = this.Entry(entity);
+
+			if (underlyingEntityEntry != null)
+				return new EFEntityEntry<E>(underlyingEntityEntry);
+			else
+				return null;
+		}
+
+		/// <summary>
+		/// Gets an <see cref="IEntityEntry{E}"/> object for the given entity 
+		/// providing access to information about the entity 
+		/// and the ability to perform actions on the entity.
+		/// This method is implemented by a redirection to <see cref="GetEntry{E}(E)"/>.
+		/// </summary>
+		/// <typeparam name="E">The type of the entity.</typeparam>
+		/// <param name="entity">The entity.</param>
+		/// <returns>Returns the entry for the entity.</returns>
+		IEntityEntry<E> IDomainContainer.Entry<E>(E entity) => GetEntry(entity);
+
+		/// <summary>
 		/// The transaction behavior.
 		/// </summary>
 		public TransactionMode TransactionMode { get; private set; }
@@ -213,7 +247,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		public void AttachGraphAsModified<T>(T graphRoot)
 			where T : class
 		{
-			if (graphRoot == null) throw new ArgumentNullException("graphRoot");
+			if (graphRoot == null) throw new ArgumentNullException(nameof(graphRoot));
 
 			var objectContext = ((IObjectContextAdapter)this).ObjectContext;
 
