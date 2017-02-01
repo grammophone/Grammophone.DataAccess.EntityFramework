@@ -28,8 +28,6 @@ namespace Grammophone.DataAccess.EntityFramework
 
 		private bool votedForRollback;
 
-		private bool hasSaved;
-
 		private ICollection<EFTransaction> openTransactions = new List<EFTransaction>();
 
 		#endregion
@@ -167,8 +165,6 @@ namespace Grammophone.DataAccess.EntityFramework
 
 			int changesCount = base.SaveChanges();
 
-			hasSaved = true;
-
 			return changesCount;
 		}
 
@@ -187,8 +183,6 @@ namespace Grammophone.DataAccess.EntityFramework
 			if (TransactionMode == TransactionMode.Deferred && transactionNestingLevel >= 1) return 0;
 
 			int changesCount = await base.SaveChangesAsync();
-
-			hasSaved = true;
 
 			return changesCount;
 		}
@@ -211,8 +205,6 @@ namespace Grammophone.DataAccess.EntityFramework
 			if (TransactionMode == TransactionMode.Deferred && transactionNestingLevel >= 1) return 0;
 
 			int changesCount = await base.SaveChangesAsync(cancellationToken);
-
-			hasSaved = true;
 
 			return changesCount;
 		}
@@ -300,8 +292,6 @@ namespace Grammophone.DataAccess.EntityFramework
 		{
 			int currentTransactionNestingLevel = Interlocked.Increment(ref transactionNestingLevel);
 
-			hasSaved = false;
-
 			var transaction = CreateTransaction();
 
 			this.openTransactions.Add(transaction);
@@ -322,8 +312,6 @@ namespace Grammophone.DataAccess.EntityFramework
 		public ITransaction BeginTransaction(System.Data.IsolationLevel isolationLevel)
 		{
 			int currentTransactionNestingLevel = Interlocked.Increment(ref transactionNestingLevel);
-
-			hasSaved = false;
 
 			var transaction = CreateTransaction(isolationLevel);
 
@@ -433,23 +421,19 @@ namespace Grammophone.DataAccess.EntityFramework
 
 		internal void OnCommitTransaction()
 		{
-			if (!votedForRollback && !hasSaved)
+			if (!votedForRollback)
 			{
 				if (TransactionMode == TransactionMode.Real || transactionNestingLevel == 1)
 					base.SaveChanges();
-
-				hasSaved = true;
 			}
 		}
 
 		internal async Task OnCommitTransactionAsync()
 		{
-			if (!votedForRollback && !hasSaved)
+			if (!votedForRollback)
 			{
 				if (TransactionMode == TransactionMode.Real || transactionNestingLevel == 1)
 					await base.SaveChangesAsync();
-
-				hasSaved = true;
 			}
 		}
 
@@ -485,8 +469,6 @@ namespace Grammophone.DataAccess.EntityFramework
 		{
 			votedForRollback = false;
 
-			hasSaved = false;
-
 			openTransactions.Clear();
 
 			transactionNestingLevel = 0;
@@ -521,8 +503,6 @@ namespace Grammophone.DataAccess.EntityFramework
 
 				CleanupCurrentTransaction();
 			}
-
-			hasSaved = false;
 		}
 
 		private void FireTransactionRollingBack()

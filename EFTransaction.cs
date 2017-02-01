@@ -44,10 +44,9 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// disposed and marked as committed.
 		/// If this method has not been called when 
 		/// method <see cref="IDisposable.Dispose"/> is invoked, the
-		/// transaction is marked for rollback. If <see cref="IDomainContainer.SaveChanges"/>
-		/// or <see cref="IDomainContainer.SaveChangesAsync()"/> haven't been called 
-		/// until the uppermost commit, a <see cref="IDomainContainer.SaveChanges"/> is
-		/// issued.
+		/// transaction is marked for rollback. A <see cref="IDomainContainer.SaveChanges"/>
+		/// call is implied calling this method when the transaction
+		/// is not marked for rollback.
 		/// </summary>
 		public void Commit()
 		{
@@ -66,10 +65,9 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// disposed and marked as committed.
 		/// If this method has not been called when 
 		/// method <see cref="IDisposable.Dispose"/> is invoked, the
-		/// transaction is marked for rollback. If <see cref="IDomainContainer.SaveChanges"/>
-		/// or <see cref="IDomainContainer.SaveChangesAsync()"/> haven't been called 
-		/// until the uppermost commit, a <see cref="IDomainContainer.SaveChangesAsync()"/> is
-		/// issued.
+		/// transaction is marked for rollback. A <see cref="IDomainContainer.SaveChangesAsync()"/>
+		/// call is implied calling this method when the transaction
+		/// is not marked for rollback.
 		/// </summary>
 		public async Task CommitAsync()
 		{
@@ -83,7 +81,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		}
 
 		/// <summary>
-		/// Fired when the whole transactin is committed successfully.
+		/// Fired when the whole transaction is committed successfully.
 		/// </summary>
 		public event Action Succeeding;
 
