@@ -445,7 +445,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		{
 			DbContextTransaction dbContextTransaction;
 
-			if (TransactionMode == TransactionMode.Real)
+			if (TransactionMode == TransactionMode.Real && transactionNestingLevel == 1)
 				dbContextTransaction = this.Database.BeginTransaction();
 			else
 				dbContextTransaction = null;
@@ -457,7 +457,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		{
 			DbContextTransaction dbContextTransaction;
 
-			if (TransactionMode == TransactionMode.Real)
+			if (TransactionMode == TransactionMode.Real && transactionNestingLevel == 1)
 				dbContextTransaction = this.Database.BeginTransaction(isolationLevel);
 			else
 				dbContextTransaction = null;
