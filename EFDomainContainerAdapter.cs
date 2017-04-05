@@ -245,6 +245,15 @@ namespace Grammophone.DataAccess.EntityFramework
 			InnerDomainContainer.SetAsModified(entity);
 		}
 
+		/// <summary>
+		/// Transform any database-specific or provider-specific exception
+		/// to descendants of <see cref="DataAccessException"/> when appropriate.
+		/// </summary>
+		/// <param name="exception">The exception to transform.</param>
+		/// <returns>Returns the transformed exception or the same exception when no transformation is needed.</returns>
+		public Exception TranslateException(Exception exception)
+			=> InnerDomainContainer.TranslateException(exception);
+
 		#endregion
 
 		#region IDisposable implementation

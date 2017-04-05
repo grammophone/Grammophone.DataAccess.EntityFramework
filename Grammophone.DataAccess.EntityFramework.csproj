@@ -62,7 +62,9 @@
     <Compile Include="EFReferenceEntry.cs" />
     <Compile Include="EFSet.cs" />
     <Compile Include="EFTransaction.cs" />
+    <Compile Include="IExceptionTransformer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlServerExceptionTransformer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

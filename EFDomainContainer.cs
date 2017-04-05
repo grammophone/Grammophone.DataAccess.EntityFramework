@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Common;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -57,7 +59,8 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// of the derived container class.
 		/// The <see cref="TransactionMode"/> is set to <see cref="TransactionMode.Real"/>.
 		/// </summary>
-		public EFDomainContainer() : this(TransactionMode.Real)
+		public EFDomainContainer()
+			: this(TransactionMode.Real)
 		{
 		}
 
@@ -69,7 +72,9 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// Either the database name or a connection string.
 		/// </param>
 		/// <param name="transactionMode">The transaction behavior.</param>
-		public EFDomainContainer(string nameOrConnectionString, TransactionMode transactionMode)
+		public EFDomainContainer(
+			string nameOrConnectionString, 
+			TransactionMode transactionMode)
 			: base(nameOrConnectionString)
 		{
 			this.TransactionMode = transactionMode;
@@ -98,7 +103,10 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// <param name="connection">The connection to use.</param>
 		/// <param name="ownTheConnection">If true, hand over connection ownership to the container.</param>
 		/// <param name="transactionMode">The transaction behavior.</param>
-		public EFDomainContainer(System.Data.Common.DbConnection connection, bool ownTheConnection, TransactionMode transactionMode)
+		public EFDomainContainer(
+			System.Data.Common.DbConnection connection, 
+			bool ownTheConnection, 
+			TransactionMode transactionMode)
 			: base(connection, ownTheConnection)
 		{
 			this.TransactionMode = transactionMode;
@@ -107,6 +115,17 @@ namespace Grammophone.DataAccess.EntityFramework
 
 			WireEventHandlers();
 		}
+
+		#endregion
+
+		#region Public properties
+
+		/// <summary>
+		/// Optional <see cref="IExceptionTransformer"/> to be used during saving changes
+		/// and <see cref="TranslateException(Exception)"/> methods.
+		/// Default value is null.
+		/// </summary>
+		public IExceptionTransformer ExceptionTransformer { get; set; }
 
 		#endregion
 
@@ -163,9 +182,20 @@ namespace Grammophone.DataAccess.EntityFramework
 		{
 			if (TransactionMode == TransactionMode.Deferred && transactionNestingLevel >= 1) return 0;
 
-			int changesCount = base.SaveChanges();
+			try
+			{
+				int changesCount = base.SaveChanges();
 
-			return changesCount;
+				return changesCount;
+			}
+			catch (DbUpdateException updateException)
+			{
+				throw TranslateUpdateException(updateException);
+			}
+			catch (DbEntityValidationException validationException)
+			{
+				throw TranslateValidationException(validationException);
+			}
 		}
 
 		/// <summary>
@@ -182,9 +212,20 @@ namespace Grammophone.DataAccess.EntityFramework
 		{
 			if (TransactionMode == TransactionMode.Deferred && transactionNestingLevel >= 1) return 0;
 
-			int changesCount = await base.SaveChangesAsync();
+			try
+			{
+				int changesCount = await base.SaveChangesAsync();
 
-			return changesCount;
+				return changesCount;
+			}
+			catch (DbUpdateException updateException)
+			{
+				throw TranslateUpdateException(updateException);
+			}
+			catch (DbEntityValidationException validationException)
+			{
+				throw TranslateValidationException(validationException);
+			}
 		}
 
 		/// <summary>
@@ -204,9 +245,20 @@ namespace Grammophone.DataAccess.EntityFramework
 		{
 			if (TransactionMode == TransactionMode.Deferred && transactionNestingLevel >= 1) return 0;
 
-			int changesCount = await base.SaveChangesAsync(cancellationToken);
+			try
+			{
+				int changesCount = await base.SaveChangesAsync(cancellationToken);
 
-			return changesCount;
+				return changesCount;
+			}
+			catch (DbUpdateException updateException)
+			{
+				throw TranslateUpdateException(updateException);
+			}
+			catch (DbEntityValidationException validationException)
+			{
+				throw TranslateValidationException(validationException);
+			}
 		}
 
 		/// <summary>
@@ -369,6 +421,38 @@ namespace Grammophone.DataAccess.EntityFramework
 			}
 		}
 
+		/// <summary>
+		/// Transform any database-specific or provider-specific exception
+		/// to descendants of <see cref="DataAccessException"/> when appropriate.
+		/// </summary>
+		/// <param name="exception">The exception to transform.</param>
+		/// <returns>Returns the transformed exception or the same exception when no transformation is needed.</returns>
+		public Exception TranslateException(Exception exception)
+		{
+			var updateException = exception as DbUpdateException;
+
+			if (updateException != null)
+			{
+				return TranslateUpdateException(updateException);
+			}
+
+			var dbException = exception as System.Data.Common.DbException;
+
+			if (dbException != null)
+			{
+				return TranslateDbException(dbException);
+			}
+
+			var validationException = exception as DbEntityValidationException;
+
+			if (validationException != null)
+			{
+				return TranslateValidationException(validationException);
+			}
+
+			return exception;
+		}
+
 		#endregion
 
 		#region IContextOwner Members
@@ -423,8 +507,28 @@ namespace Grammophone.DataAccess.EntityFramework
 		{
 			if (!votedForRollback)
 			{
-				if (TransactionMode == TransactionMode.Real || transactionNestingLevel == 1)
-					base.SaveChanges();
+				switch (this.TransactionMode)
+				{
+					case TransactionMode.Real:
+						SaveChanges();
+						break;
+
+					case TransactionMode.Deferred:
+						if (transactionNestingLevel == 1)
+						{
+							try
+							{
+								this.TransactionMode = TransactionMode.Real;
+
+								SaveChanges();
+							}
+							finally
+							{
+								this.TransactionMode = TransactionMode.Deferred;
+							}
+						}
+						break;
+				}
 			}
 		}
 
@@ -432,8 +536,28 @@ namespace Grammophone.DataAccess.EntityFramework
 		{
 			if (!votedForRollback)
 			{
-				if (TransactionMode == TransactionMode.Real || transactionNestingLevel == 1)
-					await base.SaveChangesAsync();
+				switch (this.TransactionMode)
+				{
+					case TransactionMode.Real:
+						await SaveChangesAsync();
+						break;
+
+					case TransactionMode.Deferred:
+						if (transactionNestingLevel == 1)
+						{
+							try
+							{
+								this.TransactionMode = TransactionMode.Real;
+
+								await SaveChangesAsync();
+							}
+							finally
+							{
+								this.TransactionMode = TransactionMode.Deferred;
+							}
+						}
+						break;
+				}
 			}
 		}
 
@@ -592,10 +716,54 @@ namespace Grammophone.DataAccess.EntityFramework
 					entityListener.OnAdding(addedEntry.Entity);
 				}
 			}
+		}
 
+		private DataAccessException TranslateUpdateException(DbUpdateException updateException)
+		{
+			if (this.ExceptionTransformer != null)
+			{
+				var dbException = updateException.InnerException as System.Data.Common.DbException;
+
+				if (dbException != null)
+				{
+					return this.ExceptionTransformer.TranslateDbException(dbException);
+				}
+			}
+
+			return new DataAccessException(updateException.Message, updateException.InnerException ?? updateException);
+		}
+
+		private Exception TranslateDbException(DbException dbException)
+		{
+			if (this.ExceptionTransformer != null)
+			{
+				return this.ExceptionTransformer.TranslateDbException(dbException);
+			}
+			else
+			{
+				return new DataAccessException(dbException.Message, dbException);
+			}
+		}
+
+		private EntityValidationException TranslateValidationException(DbEntityValidationException validationException)
+		{
+			var validationResults = from r in validationException.EntityValidationErrors
+															select new EntityValidationResult(
+																GetEntry(r.Entry.Entity),
+																r.IsValid,
+																r.ValidationErrors.Select(e => new EntityValidationError(
+																	e.PropertyName,
+																	e.ErrorMessage
+																)).ToArray()
+															);
+
+			throw new EntityValidationException(
+				 validationException.Message,
+				 validationException,
+				 validationResults.ToArray()
+			);
 		}
 
 		#endregion
-
 	}
 }
