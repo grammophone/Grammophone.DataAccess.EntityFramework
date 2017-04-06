@@ -722,7 +722,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		{
 			if (this.ExceptionTransformer != null)
 			{
-				var dbException = updateException.InnerException as System.Data.Common.DbException;
+				var dbException = updateException.InnerException?.InnerException as System.Data.Common.DbException;
 
 				if (dbException != null)
 				{
