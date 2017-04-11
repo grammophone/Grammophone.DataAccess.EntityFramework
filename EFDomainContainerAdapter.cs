@@ -251,7 +251,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// </summary>
 		/// <param name="exception">The exception to transform.</param>
 		/// <returns>Returns the transformed exception or the same exception when no transformation is needed.</returns>
-		public Exception TranslateException(Exception exception)
+		public Exception TranslateException(SystemException exception)
 			=> InnerDomainContainer.TranslateException(exception);
 
 		#endregion

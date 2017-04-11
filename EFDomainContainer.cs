@@ -122,7 +122,7 @@ namespace Grammophone.DataAccess.EntityFramework
 
 		/// <summary>
 		/// Optional <see cref="IExceptionTransformer"/> to be used during saving changes
-		/// and <see cref="TranslateException(Exception)"/> methods.
+		/// and <see cref="TranslateException(SystemException)"/> methods.
 		/// Default value is null.
 		/// </summary>
 		public IExceptionTransformer ExceptionTransformer { get; set; }
@@ -427,7 +427,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// </summary>
 		/// <param name="exception">The exception to transform.</param>
 		/// <returns>Returns the transformed exception or the same exception when no transformation is needed.</returns>
-		public Exception TranslateException(Exception exception)
+		public Exception TranslateException(SystemException exception)
 		{
 			var updateException = exception as DbUpdateException;
 
