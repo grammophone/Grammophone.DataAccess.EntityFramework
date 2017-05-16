@@ -30,9 +30,13 @@ namespace Grammophone.DataAccess.EntityFramework
 		#region Public properties
 
 		/// <summary>
-		/// If true, the relation has been completely loaded from the database.
+		/// Determines or sets whether the relation has been loaded from the database.
 		/// </summary>
-		public bool IsLoaded => underlyingMemberEntry.IsLoaded;
+		public bool IsLoaded
+		{
+			get => underlyingMemberEntry.IsLoaded;
+			set => underlyingMemberEntry.IsLoaded = value;
+		}
 
 		#endregion
 
