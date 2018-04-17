@@ -26,6 +26,8 @@ namespace Grammophone.DataAccess.EntityFramework
 		private ICollection<IEntityListener> entityListeners =
 			new List<IEntityListener>();
 
+		private EFChangeTracker changeTracker;
+
 		private int transactionNestingLevel;
 
 		private bool votedForRollback;
@@ -119,6 +121,12 @@ namespace Grammophone.DataAccess.EntityFramework
 		#endregion
 
 		#region Public properties
+
+		/// <summary>
+		/// Report and alter change tracking.
+		/// </summary>
+		/// <remarks>This is explicit interface implementation to avoid name overlap from <see cref="DbContext"/>.</remarks>
+		IChangeTracker IDomainContainer.ChangeTracker => changeTracker ?? (changeTracker = new EFChangeTracker(this));
 
 		/// <summary>
 		/// Optional <see cref="IExceptionTransformer"/> to be used during saving changes

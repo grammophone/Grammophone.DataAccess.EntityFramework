@@ -44,6 +44,11 @@ namespace Grammophone.DataAccess.EntityFramework
 		#region IDomainContainer implementation
 
 		/// <summary>
+		/// Report and alter change tracking.
+		/// </summary>
+		public IChangeTracker ChangeTracker => ((IDomainContainer)this.InnerDomainContainer).ChangeTracker;
+
+		/// <summary>
 		/// Gets an <see cref="IEntityEntry{E}"/> object for the given entity 
 		/// providing access to information about the entity 
 		/// and the ability to perform actions on the entity.
@@ -52,20 +57,13 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// <param name="entity">The entity.</param>
 		/// <returns>Returns the entry for the entity.</returns>
 		public IEntityEntry<E> Entry<E>(E entity) where E : class
-		{
-			return InnerDomainContainer.GetEntry(entity);
-		}
+			=> this.InnerDomainContainer.GetEntry(entity);
 
 		/// <summary>
 		/// Collection of entity listeners.
 		/// </summary>
 		public ICollection<IEntityListener> EntityListeners
-		{
-			get
-			{
-				return InnerDomainContainer.EntityListeners;
-			}
-		}
+			=> this.InnerDomainContainer.EntityListeners;
 
 		/// <summary>
 		/// If true, lazy loading is enabled. The default is true.
@@ -102,23 +100,13 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// The transaction behavior.
 		/// </summary>
 		public TransactionMode TransactionMode
-		{
-			get
-			{
-				return InnerDomainContainer.TransactionMode;
-			}
-		}
+			=> this.InnerDomainContainer.TransactionMode;
 
 		/// <summary>
 		/// The underlying context which provides the access to the data.
 		/// </summary>
 		object IContextOwner.UnderlyingContext
-		{
-			get
-			{
-				return ((IDomainContainer)InnerDomainContainer).UnderlyingContext;
-			}
-		}
+			=> ((IDomainContainer)this.InnerDomainContainer).UnderlyingContext;
 
 		/// <summary>
 		/// Set the state of a detached object graph as 'modified'.
@@ -132,18 +120,14 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// <typeparam name="T">The type of the root of the graph.</typeparam>
 		/// <param name="graphRoot">the root of the graph.</param>
 		public void AttachGraphAsModified<T>(T graphRoot) where T : class
-		{
-			InnerDomainContainer.AttachGraphAsModified(graphRoot);
-		}
+			=> this.InnerDomainContainer.AttachGraphAsModified(graphRoot);
 
 		/// <summary>
 		/// Begins a local transaction on the underlying store.
 		/// </summary>
 		/// <returns>Returns an <see cref="IDisposable"/> transaction object.</returns>
 		public ITransaction BeginTransaction()
-		{
-			return InnerDomainContainer.BeginTransaction();
-		}
+			=> this.InnerDomainContainer.BeginTransaction();
 
 		/// <summary>
 		/// Begins a local transaction on the underlying store 
@@ -156,9 +140,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// the <paramref name="isolationLevel"/> parameter is ignored.
 		/// </remarks>
 		public ITransaction BeginTransaction(IsolationLevel isolationLevel)
-		{
-			return InnerDomainContainer.BeginTransaction(isolationLevel);
-		}
+			=> this.InnerDomainContainer.BeginTransaction(isolationLevel);
 
 		/// <summary>
 		/// Create a container proxy for a new object of type <typeparamref name="T"/>.
@@ -169,9 +151,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// is true, else returns a pure object.
 		/// </returns>
 		public T Create<T>() where T : class
-		{
-			return InnerDomainContainer.Create<T>();
-		}
+			=> this.InnerDomainContainer.Create<T>();
 
 		/// <summary>
 		/// Detach a tracked entity.
@@ -181,9 +161,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// If the entity is not tracked, this method does nothing.
 		/// </remarks>
 		public void Detach(object entity)
-		{
-			InnerDomainContainer.Detach(entity);
-		}
+			=> this.InnerDomainContainer.Detach(entity);
 
 		/// <summary>
 		/// Save changes.
@@ -194,9 +172,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// this method does nothing and returns zero.
 		/// </remarks>
 		public int SaveChanges()
-		{
-			return InnerDomainContainer.SaveChanges();
-		}
+			=> this.InnerDomainContainer.SaveChanges();
 
 		/// <summary>
 		/// Save changes asynchronously.
@@ -209,9 +185,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// this method does nothing and returns zero.
 		/// </remarks>
 		public async Task<int> SaveChangesAsync()
-		{
-			return await InnerDomainContainer.SaveChangesAsync();
-		}
+			=> await this.InnerDomainContainer.SaveChangesAsync();
 
 		/// <summary>
 		/// Save changes asynchronously.
@@ -227,9 +201,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// this method does nothing and returns zero.
 		/// </remarks>
 		public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
-		{
-			return await InnerDomainContainer.SaveChangesAsync(cancellationToken);
-		}
+			=> await this.InnerDomainContainer.SaveChangesAsync(cancellationToken);
 
 		/// <summary>
 		/// Set the state of an entity as 'modified'.
@@ -241,9 +213,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// a deserialized <paramref name="entity"/>.
 		/// </remarks>
 		public void SetAsModified(object entity)
-		{
-			InnerDomainContainer.SetAsModified(entity);
-		}
+			=> this.InnerDomainContainer.SetAsModified(entity);
 
 		/// <summary>
 		/// Transform any database-specific or provider-specific exception
@@ -252,7 +222,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// <param name="exception">The exception to transform.</param>
 		/// <returns>Returns the transformed exception or the same exception when no transformation is needed.</returns>
 		public Exception TranslateException(SystemException exception)
-			=> InnerDomainContainer.TranslateException(exception);
+			=> this.InnerDomainContainer.TranslateException(exception);
 
 		#endregion
 
@@ -262,9 +232,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// Close and dispose the domain container.
 		/// </summary>
 		public void Dispose()
-		{
-			InnerDomainContainer.Dispose();
-		}
+			=> this.InnerDomainContainer.Dispose();
 
 		#endregion
 	}

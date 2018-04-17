@@ -49,11 +49,11 @@ namespace Grammophone.DataAccess.EntityFramework
 		{
 			get
 			{
-				return ConvertEntityStateToTrackingState(underlyingEntityEntry.State);
+				return TypeConversions.EntityStateToTrackingState(underlyingEntityEntry.State);
 			}
 			set
 			{
-				underlyingEntityEntry.State = ConvertTrackingStateToEntityState(value);
+				underlyingEntityEntry.State = TypeConversions.TrackingStateToEntityState(value);
 			}
 		}
 
@@ -166,58 +166,6 @@ namespace Grammophone.DataAccess.EntityFramework
 		public async Task ReloadAsync(CancellationToken cancellationToken)
 		{
 			await underlyingEntityEntry.ReloadAsync(cancellationToken);
-		}
-
-		#endregion
-
-		#region Private methods
-
-		private static TrackingState ConvertEntityStateToTrackingState(EntityState entityState)
-		{
-			switch (entityState)
-			{
-				case EntityState.Detached:
-					return TrackingState.Detached;
-
-				case EntityState.Unchanged:
-					return TrackingState.Unchanged;
-
-				case EntityState.Added:
-					return TrackingState.Added;
-
-				case EntityState.Deleted:
-					return TrackingState.Deleted;
-
-				case EntityState.Modified:
-					return TrackingState.Modified;
-
-				default:
-					throw new ArgumentException($"Unsupported value {entityState}.", nameof(entityState));
-			}
-		}
-
-		private static EntityState ConvertTrackingStateToEntityState(TrackingState trackingState)
-		{
-			switch (trackingState)
-			{
-				case TrackingState.Detached:
-					return EntityState.Detached;
-
-				case TrackingState.Added:
-					return EntityState.Added;
-
-				case TrackingState.Deleted:
-					return EntityState.Deleted;
-
-				case TrackingState.Modified:
-					return EntityState.Modified;
-
-				case TrackingState.Unchanged:
-					return EntityState.Unchanged;
-
-				default:
-					throw new ArgumentException($"Unsupported value {trackingState}.", nameof(trackingState));
-			}
 		}
 
 		#endregion
