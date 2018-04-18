@@ -88,12 +88,12 @@ namespace Grammophone.DataAccess.EntityFramework
 
 		/// <summary>
 		/// Undo any changes to tracked entities.
-		/// In particular, revert values of changes entities, detach new entities, and cancel deleting entities.
+		/// In particular, revert values of changed entities, detach new entities, and cancel deleting entities.
 		/// </summary>
 		public void UndoChanges()
 		{
 			// Detach the added.
-			var addedEntries = dbChangeTracker.Entries().Where(e => (e.State & EntityState.Added) == EntityState.Added);
+			var addedEntries = dbChangeTracker.Entries().Where(e => (e.State & EntityState.Added) != 0);
 
 			foreach (var addedEntry in addedEntries)
 			{
@@ -101,7 +101,7 @@ namespace Grammophone.DataAccess.EntityFramework
 			}
 
 			// Undo the modified.
-			var modifiedEntries = dbChangeTracker.Entries().Where(e => (e.State & EntityState.Modified) == EntityState.Modified);
+			var modifiedEntries = dbChangeTracker.Entries().Where(e => (e.State & EntityState.Modified) != 0);
 
 			foreach (var modifiedEntry in modifiedEntries)
 			{
@@ -110,10 +110,13 @@ namespace Grammophone.DataAccess.EntityFramework
 				modifiedEntry.State = (modifiedEntry.State & ~EntityState.Modified) | EntityState.Unchanged;
 			}
 
-			var deletedEntries = dbChangeTracker.Entries().Where(e => (e.State & EntityState.Deleted) == EntityState.Deleted);
+			// Undelete.
+			var deletedEntries = dbChangeTracker.Entries().Where(e => (e.State & EntityState.Deleted) != 0);
 
 			foreach (var deletedEntry in deletedEntries)
 			{
+				deletedEntry.CurrentValues.SetValues(deletedEntry.OriginalValues);
+
 				deletedEntry.State = EntityState.Unchanged;
 			}
 		}
