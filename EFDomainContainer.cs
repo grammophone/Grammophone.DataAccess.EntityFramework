@@ -620,15 +620,7 @@ namespace Grammophone.DataAccess.EntityFramework
 
 				if (!votedForRollback)
 				{
-					try
-					{
-						FireTransactionSucceeding();
-					}
-					catch
-					{
-						FireTransactionRollingBack();
-						throw;
-					}
+					FireTransactionSucceeding();
 				}
 				else
 				{
