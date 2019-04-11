@@ -306,13 +306,13 @@ namespace Grammophone.DataAccess.EntityFramework
 
 			var attachedEntities = new List<object>();
 
-			void StateChangeListener(object sender, CollectionChangeEventArgs e)
+			void stateChangeListener(object sender, CollectionChangeEventArgs e)
 			{
 				if (e.Action == CollectionChangeAction.Add)
 					attachedEntities.Add(e.Element);
 			}
 
-			objectStateManager.ObjectStateManagerChanged += StateChangeListener;
+			objectStateManager.ObjectStateManagerChanged += stateChangeListener;
 
 			try
 			{
@@ -320,7 +320,7 @@ namespace Grammophone.DataAccess.EntityFramework
 			}
 			finally
 			{
-				objectStateManager.ObjectStateManagerChanged -= StateChangeListener;
+				objectStateManager.ObjectStateManagerChanged -= stateChangeListener;
 			}
 
 			foreach (var entity in attachedEntities)
