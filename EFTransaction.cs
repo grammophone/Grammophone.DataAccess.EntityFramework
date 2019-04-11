@@ -19,18 +19,15 @@ namespace Grammophone.DataAccess.EntityFramework
 
 		private bool markedForCommit;
 
-		private DbContextTransaction dbContextTransaction;
-
 		#endregion
 
 		#region Construction
 
-		internal EFTransaction(EFDomainContainer domainContainer, DbContextTransaction dbContextTransaction)
+		internal EFTransaction(EFDomainContainer domainContainer)
 		{
 			if (domainContainer == null) throw new ArgumentNullException("domainContainer");
 
 			this.domainContainer = domainContainer;
-			this.dbContextTransaction = dbContextTransaction;
 			this.markedForCommit = false;
 		}
 
@@ -54,8 +51,6 @@ namespace Grammophone.DataAccess.EntityFramework
 
 			this.domainContainer.OnCommitTransaction();
 
-			dbContextTransaction?.Commit();
-
 			markedForCommit = true;
 		}
 
@@ -75,8 +70,6 @@ namespace Grammophone.DataAccess.EntityFramework
 
 			await this.domainContainer.OnCommitTransactionAsync();
 
-			dbContextTransaction?.Commit();
-
 			markedForCommit = true;
 		}
 
@@ -92,8 +85,6 @@ namespace Grammophone.DataAccess.EntityFramework
 		{
 			EnsureNotDisposed();
 
-			dbContextTransaction?.Commit();
-
 			markedForCommit = true;
 		}
 
@@ -103,7 +94,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		public event Action Succeeding;
 
 		/// <summary>
-		/// Fired when the whole transaction is committed successfully.
+		/// Fired when the whole transaction is rolled back.
 		/// </summary>
 		public event Action RollingBack;
 
@@ -128,12 +119,6 @@ namespace Grammophone.DataAccess.EntityFramework
 				domainContainer.VoteForRollbackAndDisposeTransaction();
 			}
 
-			if (dbContextTransaction != null)
-			{
-				dbContextTransaction.Dispose();
-				dbContextTransaction = null;
-			}
-
 			domainContainer = null;
 		}
 
@@ -143,12 +128,12 @@ namespace Grammophone.DataAccess.EntityFramework
 
 		internal void OnSucceeding()
 		{
-			if (this.Succeeding != null) this.Succeeding();
+			this.Succeeding?.Invoke();
 		}
 
 		internal void OnRollingBack()
 		{
-			if (this.RollingBack != null) this.RollingBack();
+			this.RollingBack?.Invoke();
 		}
 
 		#endregion

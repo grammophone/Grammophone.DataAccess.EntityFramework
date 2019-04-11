@@ -23,8 +23,7 @@ namespace Grammophone.DataAccess.EntityFramework
 	{
 		#region Private fields
 
-		private ICollection<IEntityListener> entityListeners =
-			new List<IEntityListener>();
+		private DbContextTransaction dbContextTransaction;
 
 		private EFChangeTracker changeTracker;
 
@@ -32,7 +31,7 @@ namespace Grammophone.DataAccess.EntityFramework
 
 		private bool votedForRollback;
 
-		private ICollection<EFTransaction> openTransactions = new List<EFTransaction>();
+		private readonly ICollection<EFTransaction> openTransactions = new List<EFTransaction>();
 
 		#endregion
 
@@ -106,7 +105,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// <param name="ownTheConnection">If true, hand over connection ownership to the container.</param>
 		/// <param name="transactionMode">The transaction behavior.</param>
 		public EFDomainContainer(
-			System.Data.Common.DbConnection connection, 
+			DbConnection connection, 
 			bool ownTheConnection, 
 			TransactionMode transactionMode)
 			: base(connection, ownTheConnection)
@@ -307,13 +306,13 @@ namespace Grammophone.DataAccess.EntityFramework
 
 			var attachedEntities = new List<object>();
 
-			CollectionChangeEventHandler stateChangeListener = delegate (object sender, CollectionChangeEventArgs e)
+			void StateChangeListener(object sender, CollectionChangeEventArgs e)
 			{
 				if (e.Action == CollectionChangeAction.Add)
 					attachedEntities.Add(e.Element);
-			};
+			}
 
-			objectStateManager.ObjectStateManagerChanged += stateChangeListener;
+			objectStateManager.ObjectStateManagerChanged += StateChangeListener;
 
 			try
 			{
@@ -321,7 +320,7 @@ namespace Grammophone.DataAccess.EntityFramework
 			}
 			finally
 			{
-				objectStateManager.ObjectStateManagerChanged -= stateChangeListener;
+				objectStateManager.ObjectStateManagerChanged -= StateChangeListener;
 			}
 
 			foreach (var entity in attachedEntities)
@@ -352,7 +351,12 @@ namespace Grammophone.DataAccess.EntityFramework
 		{
 			int currentTransactionNestingLevel = Interlocked.Increment(ref transactionNestingLevel);
 
-			var transaction = CreateTransaction();
+			if (this.TransactionMode == TransactionMode.Real && transactionNestingLevel == 1)
+			{
+				dbContextTransaction = this.Database.BeginTransaction();
+			}
+
+			var transaction = new EFTransaction(this);
 
 			this.openTransactions.Add(transaction);
 
@@ -373,7 +377,12 @@ namespace Grammophone.DataAccess.EntityFramework
 		{
 			int currentTransactionNestingLevel = Interlocked.Increment(ref transactionNestingLevel);
 
-			var transaction = CreateTransaction(isolationLevel);
+			if (this.TransactionMode == TransactionMode.Real && transactionNestingLevel == 1)
+			{
+				dbContextTransaction = this.Database.BeginTransaction(isolationLevel);
+			}
+
+			var transaction = new EFTransaction(this);
 
 			this.openTransactions.Add(transaction);
 
@@ -383,10 +392,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// <summary>
 		/// Collection of entity listeners.
 		/// </summary>
-		public ICollection<IEntityListener> EntityListeners
-		{
-			get { return entityListeners; }
-		}
+		public ICollection<IEntityListener> EntityListeners { get; } = new List<IEntityListener>();
 
 		/// <summary>
 		/// Create a container proxy for a new object of type <typeparamref name="T"/>.
@@ -437,28 +443,20 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// <returns>Returns the transformed exception or the same exception when no transformation is needed.</returns>
 		public Exception TranslateException(SystemException exception)
 		{
-			var updateException = exception as DbUpdateException;
-
-			if (updateException != null)
+			switch (exception)
 			{
-				return TranslateUpdateException(updateException);
+				case DbUpdateException updateException:
+					return TranslateUpdateException(updateException);
+
+				case DbException dbException:
+					return TranslateDbException(dbException);
+
+				case DbEntityValidationException validationException:
+					return TranslateValidationException(validationException);
+
+				default:
+					return exception;
 			}
-
-			var dbException = exception as System.Data.Common.DbException;
-
-			if (dbException != null)
-			{
-				return TranslateDbException(dbException);
-			}
-
-			var validationException = exception as DbEntityValidationException;
-
-			if (validationException != null)
-			{
-				return TranslateValidationException(validationException);
-			}
-
-			return exception;
 		}
 
 		#endregion
@@ -519,6 +517,12 @@ namespace Grammophone.DataAccess.EntityFramework
 				{
 					case TransactionMode.Real:
 						SaveChanges();
+
+						if (transactionNestingLevel == 1 && dbContextTransaction != null)
+						{
+							dbContextTransaction.Commit();
+						}
+
 						break;
 
 					case TransactionMode.Deferred:
@@ -535,6 +539,7 @@ namespace Grammophone.DataAccess.EntityFramework
 								this.TransactionMode = TransactionMode.Deferred;
 							}
 						}
+
 						break;
 				}
 			}
@@ -548,6 +553,12 @@ namespace Grammophone.DataAccess.EntityFramework
 				{
 					case TransactionMode.Real:
 						await SaveChangesAsync();
+
+						if (transactionNestingLevel == 1 && dbContextTransaction != null)
+						{
+							dbContextTransaction.Commit();
+						}
+
 						break;
 
 					case TransactionMode.Deferred:
@@ -564,6 +575,7 @@ namespace Grammophone.DataAccess.EntityFramework
 								this.TransactionMode = TransactionMode.Deferred;
 							}
 						}
+
 						break;
 				}
 			}
@@ -573,32 +585,15 @@ namespace Grammophone.DataAccess.EntityFramework
 
 		#region Private methods
 
-		private EFTransaction CreateTransaction()
-		{
-			DbContextTransaction dbContextTransaction;
-
-			if (TransactionMode == TransactionMode.Real && transactionNestingLevel == 1)
-				dbContextTransaction = this.Database.BeginTransaction();
-			else
-				dbContextTransaction = null;
-
-			return new EFTransaction(this, dbContextTransaction);
-		}
-
-		private EFTransaction CreateTransaction(System.Data.IsolationLevel isolationLevel)
-		{
-			DbContextTransaction dbContextTransaction;
-
-			if (TransactionMode == TransactionMode.Real && transactionNestingLevel == 1)
-				dbContextTransaction = this.Database.BeginTransaction(isolationLevel);
-			else
-				dbContextTransaction = null;
-
-			return new EFTransaction(this, dbContextTransaction);
-		}
-
 		private void CleanupCurrentTransaction()
 		{
+			if (dbContextTransaction != null)
+			{
+				dbContextTransaction.Dispose();
+
+				dbContextTransaction = null;
+			}
+
 			votedForRollback = false;
 
 			openTransactions.Clear();
@@ -616,6 +611,13 @@ namespace Grammophone.DataAccess.EntityFramework
 
 			if (currentTransactionNestingLevel == 0)
 			{
+				if (this.TransactionMode == TransactionMode.Real && dbContextTransaction != null)
+				{
+					dbContextTransaction.Dispose();
+
+					dbContextTransaction = null;
+				}
+
 				if (!votedForRollback)
 				{
 					try
@@ -730,9 +732,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		{
 			if (this.ExceptionTransformer != null)
 			{
-				var dbException = updateException.InnerException?.InnerException as System.Data.Common.DbException;
-
-				if (dbException != null)
+				if (updateException.InnerException?.InnerException is DbException dbException)
 				{
 					return this.ExceptionTransformer.TranslateDbException(dbException);
 				}
