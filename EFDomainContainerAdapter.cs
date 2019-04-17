@@ -15,14 +15,15 @@ namespace Grammophone.DataAccess.EntityFramework
 	/// <see cref="EFDomainContainer"/> which exposes entity sets as <see cref="DbSet{E}"/>
 	/// which you should adapt using <see cref="EFSet{E}"/>.
 	/// </summary>
-	public abstract class EFDomainContainerAdapter : IDomainContainer
+	public abstract class EFDomainContainerAdapter<D> : IDomainContainer
+		where D : EFDomainContainer
 	{
 		#region Protected properties
 
 		/// <summary>
 		/// The adapted <see cref="EFDomainContainer"/>.
 		/// </summary>
-		protected EFDomainContainer InnerDomainContainer { get; private set; }
+		protected D InnerDomainContainer { get; }
 
 		#endregion
 
@@ -32,7 +33,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// Create.
 		/// </summary>
 		/// <param name="innerContainer">The adapted <see cref="EFDomainContainer"/>.</param>
-		public EFDomainContainerAdapter(EFDomainContainer innerContainer)
+		public EFDomainContainerAdapter(D innerContainer)
 		{
 			if (innerContainer == null) throw new ArgumentNullException(nameof(innerContainer));
 
