@@ -1,11 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <ProjectGuid>{BB3ABC00-B96D-41F3-B6D1-FB21C5140CE2}</ProjectGuid>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFrameworks>net472;netstandard2.1;</TargetFrameworks>
     <AssemblyTitle>Grammophone.DataAccess.EntityFramework</AssemblyTitle>
     <Product>Grammophone.DataAccess.EntityFramework</Product>
     <Copyright>Copyright ©  2016</Copyright>
-    <OutputPath>bin\$(Configuration)\</OutputPath>
     <DocumentationFile>bin\$(Configuration)\Grammophone.DataAccess.EntityFramework.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
