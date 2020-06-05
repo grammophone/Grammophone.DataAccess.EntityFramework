@@ -1,0 +1,955 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Grammophone.DataAccess.EntityFramework</name>
+    </assembly>
+    <members>
+        <member name="T:Grammophone.DataAccess.EntityFramework.EFChangeTracker">
+            <summary>
+            Implementation of <see cref="T:Grammophone.DataAccess.IChangeTracker"/> for entity framework.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFChangeTracker.DetectChanges">
+            <summary>
+            Manually scan tracked entities for changes. Only necessary when <see cref="P:Grammophone.DataAccess.IDomainContainer.IsProxyCreationEnabled"/>
+            is false or when an entity does not have all properties as virtual.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFChangeTracker.Entries">
+            <summary>
+            Get the entities being tracked.
+            </summary>
+            <returns>Returns a collection of the tracked entities.</returns>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFChangeTracker.Entries``1">
+            <summary>
+            Get the entities of type <typeparamref name="E"/> being tracked.
+            </summary>
+            <typeparam name="E">The type of the entities being tracked.</typeparam>
+            <returns>Returns a collection of the specified tracked entities.</returns>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFChangeTracker.Entries(Grammophone.DataAccess.TrackingState)">
+            <summary>
+            Get the entities of type being tracked with specified tracking states.
+            </summary>
+            <param name="trackingState">Combination of <see cref="T:Grammophone.DataAccess.TrackingState"/> values via OR.</param>
+            <returns>Returns a collection of the specified tracked entities.</returns>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFChangeTracker.Entries``1(Grammophone.DataAccess.TrackingState)">
+            <summary>
+            Get the entities of type <typeparamref name="E"/> being tracked with specified tracking states.
+            </summary>
+            <typeparam name="E">The type of the entities being tracked.</typeparam>
+            <param name="trackingState">Combination of <see cref="T:Grammophone.DataAccess.TrackingState"/> values via OR.</param>
+            <returns>Returns a collection of the specified tracked entities.</returns>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFChangeTracker.HasChanges">
+            <summary>
+            True when the tracked entities have unsaved changes or when new entities are to be saved or when entities are to be deleted.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFChangeTracker.UndoChanges">
+            <summary>
+            Undo any changes to tracked entities.
+            In particular, revert values of changed entities, detach new entities, and cancel deleting entities.
+            </summary>
+        </member>
+        <member name="T:Grammophone.DataAccess.EntityFramework.EFCollectionEntry`2">
+            <summary>
+            Represents a collection property by 
+            implementing <see cref="T:Grammophone.DataAccess.ICollectionEntry`2"/>.
+            </summary>
+            <typeparam name="E">The type of the entity.</typeparam>
+            <typeparam name="I">The type of items in the collection.</typeparam>
+        </member>
+        <member name="P:Grammophone.DataAccess.EntityFramework.EFCollectionEntry`2.IsLoaded">
+            <summary>
+            Determines or sets whether the relation has been loaded from the database.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFCollectionEntry`2.Load">
+            <summary>
+            Loads the relation from the database. 
+            Note that entities that already exist in the <see cref="T:Grammophone.DataAccess.IDomainContainer"/> 
+            are not overwritten with values from the database.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFCollectionEntry`2.LoadAsync">
+            <summary>
+            Asynchronously loads the relation from the database. 
+            Note that entities that already exist in the <see cref="T:Grammophone.DataAccess.IDomainContainer"/> 
+            are not overwritten with values from the database.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFCollectionEntry`2.LoadAsync(System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously loads the relation from the database. 
+            Note that entities that already exist in the <see cref="T:Grammophone.DataAccess.IDomainContainer"/> 
+            are not overwritten with values from the database.
+            </summary>
+            <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> to observe while waiting for the task to complete.</param>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFCollectionEntry`2.Query">
+            <summary>
+            Returns the query that would be used to load the collection from the database.
+            The returned query can be modified using LINQ to perform filtering 
+            or operations in the database.
+            </summary>
+        </member>
+        <member name="T:Grammophone.DataAccess.EntityFramework.EFComplexPropertyEntry`2">
+            <summary>
+            Represents a complex property by 
+            implementing <see cref="T:Grammophone.DataAccess.IComplexPropertyEntry`2"/>.
+            </summary>
+            <typeparam name="E">The type of the entity.</typeparam>
+            <typeparam name="P">The type of the property.</typeparam>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFComplexPropertyEntry`2.ComplexProperty``1(System.Linq.Expressions.Expression{System.Func{`1,``0}})">
+            <summary>
+            Gets an object that represents a scalar or complex subproperty of this complex property.
+            </summary>
+            <typeparam name="N">The type of the subproperty.</typeparam>
+            <param name="subpropertySelector">An expression representing the subproperty.</param>
+            <returns>Returns an object representing the subproperty.</returns>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFComplexPropertyEntry`2.Property``1(System.Linq.Expressions.Expression{System.Func{`1,``0}})">
+            <summary>
+            Gets an object that represents a complex subproperty of this complex property.
+            </summary>
+            <typeparam name="N">The type of the subproperty.</typeparam>
+            <param name="subpropertySelector">An expression representing the subproperty.</param>
+            <returns>Returns an object representing the subproperty.</returns>
+        </member>
+        <member name="T:Grammophone.DataAccess.EntityFramework.EFDomainContainer">
+            <summary>
+            An Entity Framework <see cref="T:System.Data.Entity.DbContext"/> which also 
+            implements <see cref="T:Grammophone.DataAccess.IDomainContainer"/>. This means that the entity sets whould be defined as
+            Entity Framework's <see cref="T:System.Collections.Generic.ISet`1"/> rather than <see cref="T:Grammophone.DataAccess.IEntitySet`1"/>.
+            If <see cref="T:Grammophone.DataAccess.IEntitySet`1"/>'s are required, adapt an intance of this class
+            using <see cref="T:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1"/>.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainer.#ctor(Grammophone.DataAccess.TransactionMode)">
+            <summary>
+            Constructs a new container instance using conventions to 
+            create the name of the database to which a connection will be made.
+            The by-convention name is the full name (namespace + class name)
+            of the derived container class.
+            </summary>
+            <param name="transactionMode">The transaction behavior.</param>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainer.#ctor">
+            <summary>
+            Constructs a new container instance using conventions to 
+            create the name of the database to which a connection will be made.
+            The by-convention name is the full name (namespace + class name)
+            of the derived container class.
+            The <see cref="P:Grammophone.DataAccess.EntityFramework.EFDomainContainer.TransactionMode"/> is set to <see cref="F:Grammophone.DataAccess.TransactionMode.Real"/>.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainer.#ctor(System.String,Grammophone.DataAccess.TransactionMode)">
+            <summary>
+            Constructs a new container instance using the given string as the name
+            or connection string for the database to which a connection will be made. 
+            </summary>
+            <param name="nameOrConnectionString">
+            Either the database name or a connection string.
+            </param>
+            <param name="transactionMode">The transaction behavior.</param>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainer.#ctor(System.String)">
+            <summary>
+            Constructs a new container instance using the given string as the name
+            or connection string for the database to which a connection will be made. 
+            The <see cref="P:Grammophone.DataAccess.EntityFramework.EFDomainContainer.TransactionMode"/> is set to <see cref="F:Grammophone.DataAccess.TransactionMode.Real"/>.
+            </summary>
+            <param name="nameOrConnectionString">
+            Either the database name or a connection string.
+            </param>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainer.#ctor(System.Data.Common.DbConnection,System.Boolean,Grammophone.DataAccess.TransactionMode)">
+            <summary>
+            Constructs a new container instance using a given connection.
+            </summary>
+            <param name="connection">The connection to use.</param>
+            <param name="ownTheConnection">If true, hand over connection ownership to the container.</param>
+            <param name="transactionMode">The transaction behavior.</param>
+        </member>
+        <member name="P:Grammophone.DataAccess.EntityFramework.EFDomainContainer.Grammophone#DataAccess#IDomainContainer#ChangeTracker">
+            <summary>
+            Report and alter change tracking.
+            </summary>
+            <remarks>This is explicit interface implementation to avoid name overlap from <see cref="T:System.Data.Entity.DbContext"/>.</remarks>
+        </member>
+        <member name="P:Grammophone.DataAccess.EntityFramework.EFDomainContainer.ExceptionTransformer">
+            <summary>
+            Optional <see cref="T:Grammophone.DataAccess.EntityFramework.IExceptionTransformer"/> to be used during saving changes
+            and <see cref="M:Grammophone.DataAccess.EntityFramework.EFDomainContainer.TranslateException(System.SystemException)"/> methods.
+            Default value is null.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainer.GetEntry``1(``0)">
+            <summary>
+            Gets an <see cref="T:Grammophone.DataAccess.IEntityEntry`1"/> object for the given entity 
+            providing access to information about the entity 
+            and the ability to perform actions on the entity.
+            This method explictly implements the <see cref="M:Grammophone.DataAccess.IDomainContainer.Entry``1(``0)"/> method
+            by wrapping and abstracting the <see cref="M:System.Data.Entity.DbContext.Entry``1(``0)"/> method.
+            </summary>
+            <typeparam name="E">The type of the entity.</typeparam>
+            <param name="entity">The entity.</param>
+            <returns>Returns the entry for the entity.</returns>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainer.Grammophone#DataAccess#IDomainContainer#Entry``1(``0)">
+            <summary>
+            Gets an <see cref="T:Grammophone.DataAccess.IEntityEntry`1"/> object for the given entity 
+            providing access to information about the entity 
+            and the ability to perform actions on the entity.
+            This method is implemented by a redirection to <see cref="M:Grammophone.DataAccess.EntityFramework.EFDomainContainer.GetEntry``1(``0)"/>.
+            </summary>
+            <typeparam name="E">The type of the entity.</typeparam>
+            <param name="entity">The entity.</param>
+            <returns>Returns the entry for the entity.</returns>
+        </member>
+        <member name="P:Grammophone.DataAccess.EntityFramework.EFDomainContainer.TransactionMode">
+            <summary>
+            The transaction behavior.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainer.SaveChanges">
+            <summary>
+            Save changes.
+            </summary>
+            <returns>Returns the number of objects written to the storage.</returns>
+            <remarks>
+            When in a transaction while <see cref="P:Grammophone.DataAccess.EntityFramework.EFDomainContainer.TransactionMode"/> is <see cref="F:Grammophone.DataAccess.TransactionMode.Deferred"/>, 
+            this method does nothing and returns zero.
+            </remarks>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainer.SaveChangesAsync">
+            <summary>
+            Save changes asynchronously.
+            </summary>
+            <returns>
+            Returns a task whose result is the number of objects written to the storage.
+            </returns>
+            <remarks>
+            When in a transaction while <see cref="P:Grammophone.DataAccess.EntityFramework.EFDomainContainer.TransactionMode"/> is <see cref="F:Grammophone.DataAccess.TransactionMode.Deferred"/>, 
+            this method does nothing and returns zero.
+            </remarks>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainer.SaveChangesAsync(System.Threading.CancellationToken)">
+            <summary>
+            Save changes asynchronously.
+            </summary>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> to observe while waiting for the task to complete.
+            </param>
+            <returns>
+            Returns a task whose result is the number of objects written to the storage.
+            </returns>
+            <remarks>
+            When in a transaction while <see cref="P:Grammophone.DataAccess.EntityFramework.EFDomainContainer.TransactionMode"/> is <see cref="F:Grammophone.DataAccess.TransactionMode.Deferred"/>, 
+            this method does nothing and returns zero.
+            </remarks>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainer.SetAsModified(System.Object)">
+            <summary>
+            Set the state of an entity as 'modified'.
+            </summary>
+            <param name="entity">The entity.</param>
+            <remarks>
+            This is useful for services data transfer,
+            and it typically follows the attachment of
+            a deserialized <paramref name="entity"/>.
+            </remarks>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainer.AttachGraphAsModified``1(``0)">
+            <summary>
+            Set the state of a detached object graph as 'modified'.
+            If the graph elements  are in any other state than 'detached',
+            their state is not changed.
+            WARNING: Setting any of the graph's disconnected elements' 
+            relationships to a connected object
+            changes all the 'disconnected' states to 'added'. Therefore, set all relationships
+            to connected objects AFTER the call to this method.
+            </summary>
+            <typeparam name="T">The type of the root of the graph.</typeparam>
+            <param name="graphRoot">the root of the graph.</param>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainer.Detach(System.Object)">
+            <summary>
+            Detach a tracked entity.
+            </summary>
+            <param name="entity">The entity to detach.</param>
+            <remarks>
+            If the entity is not tracked, this method does nothing.
+            </remarks>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainer.BeginTransaction">
+            <summary>
+            Begins a local transaction on the underlying store.
+            </summary>
+            <returns>Returns an <see cref="T:System.IDisposable"/> transaction object.</returns>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainer.BeginTransaction(System.Data.IsolationLevel)">
+            <summary>
+            Begins a local transaction on the underlying store 
+            using the specified isolation level.
+            </summary>
+            <param name="isolationLevel">The requested isolation level.</param>
+            <returns>Returns an <see cref="T:System.IDisposable"/> transaction object.</returns>
+            <remarks>
+            If the <see cref="P:Grammophone.DataAccess.EntityFramework.EFDomainContainer.TransactionMode"/> is <see cref="F:Grammophone.DataAccess.TransactionMode.Deferred"/>,
+            the <paramref name="isolationLevel"/> parameter is ignored.
+            </remarks>
+        </member>
+        <member name="P:Grammophone.DataAccess.EntityFramework.EFDomainContainer.EntityListeners">
+            <summary>
+            Collection of entity listeners.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainer.Create``1">
+            <summary>
+            Create a container proxy for a new object of type <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">The type of the object to be proxied.</typeparam>
+            <returns>Returns a proxy for the new object.</returns>
+        </member>
+        <member name="P:Grammophone.DataAccess.EntityFramework.EFDomainContainer.IsProxyCreationEnabled">
+            <summary>
+            If set as true and all preconditions are met, the container
+            will provide proxy classes wherever applicable. Default is true.
+            </summary>
+        </member>
+        <member name="P:Grammophone.DataAccess.EntityFramework.EFDomainContainer.IsLazyLoadingEnabled">
+            <summary>
+            If true, lazy loading is enabled. The default is true.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainer.TranslateException(System.SystemException)">
+            <summary>
+            Transform any database-specific or provider-specific exception
+            to descendants of <see cref="T:Grammophone.DataAccess.DataAccessException"/> when appropriate.
+            </summary>
+            <param name="exception">The exception to transform.</param>
+            <returns>Returns the transformed exception or the same exception when no transformation is needed.</returns>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainer.Initialize">
+            <summary>
+            Called first inside the constructors.
+            </summary>
+            <remarks>
+            Default implementation does nothing.
+            </remarks>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainer.Dispose(System.Boolean)">
+            <summary>
+            Add unwiring of event handlers to the disposing.
+            </summary>
+        </member>
+        <member name="T:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1">
+            <summary>
+            Use this domain container implementation if you plan to expose 
+            entity sets as <see cref="T:Grammophone.DataAccess.IEntitySet`1"/>. It requires an underlying
+            <see cref="T:Grammophone.DataAccess.EntityFramework.EFDomainContainer"/> which exposes entity sets as <see cref="T:System.Data.Entity.DbSet`1"/>
+            which you should adapt using <see cref="T:Grammophone.DataAccess.EntityFramework.EFSet`1"/>.
+            </summary>
+        </member>
+        <member name="P:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1.InnerDomainContainer">
+            <summary>
+            The adapted <see cref="T:Grammophone.DataAccess.EntityFramework.EFDomainContainer"/>.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1.#ctor(`0)">
+            <summary>
+            Create.
+            </summary>
+            <param name="innerContainer">The adapted <see cref="T:Grammophone.DataAccess.EntityFramework.EFDomainContainer"/>.</param>
+        </member>
+        <member name="P:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1.ChangeTracker">
+            <summary>
+            Report and alter change tracking.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1.Entry``1(``0)">
+            <summary>
+            Gets an <see cref="T:Grammophone.DataAccess.IEntityEntry`1"/> object for the given entity 
+            providing access to information about the entity 
+            and the ability to perform actions on the entity.
+            </summary>
+            <typeparam name="E">The type of the entity.</typeparam>
+            <param name="entity">The entity.</param>
+            <returns>Returns the entry for the entity.</returns>
+        </member>
+        <member name="P:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1.EntityListeners">
+            <summary>
+            Collection of entity listeners.
+            </summary>
+        </member>
+        <member name="P:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1.IsLazyLoadingEnabled">
+            <summary>
+            If true, lazy loading is enabled. The default is true.
+            </summary>
+        </member>
+        <member name="P:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1.IsProxyCreationEnabled">
+            <summary>
+            If set as true and all preconditions are met, the container
+            will provide proxy classes wherever applicable. Default is true.
+            </summary>
+        </member>
+        <member name="P:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1.TransactionMode">
+            <summary>
+            The transaction behavior.
+            </summary>
+        </member>
+        <member name="P:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1.Grammophone#DataAccess#IContextOwner#UnderlyingContext">
+            <summary>
+            The underlying context which provides the access to the data.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1.AttachGraphAsModified``1(``0)">
+            <summary>
+            Set the state of a detached object graph as 'modified'.
+            If the graph elements  are in any other state than 'detached',
+            their state is not changed.
+            WARNING: Setting any of the graph's disconnected elements' 
+            relationships to a connected object
+            changes all the 'disconnected' states to 'added'. Therefore, set all relationships
+            to connected objects AFTER the call to this method.
+            </summary>
+            <typeparam name="T">The type of the root of the graph.</typeparam>
+            <param name="graphRoot">the root of the graph.</param>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1.BeginTransaction">
+            <summary>
+            Begins a local transaction on the underlying store.
+            </summary>
+            <returns>Returns an <see cref="T:System.IDisposable"/> transaction object.</returns>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1.BeginTransaction(System.Data.IsolationLevel)">
+            <summary>
+            Begins a local transaction on the underlying store 
+            using the specified isolation level.
+            </summary>
+            <param name="isolationLevel">The requested isolation level.</param>
+            <returns>Returns an <see cref="T:System.IDisposable"/> transaction object.</returns>
+            <remarks>
+            If the <see cref="P:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1.TransactionMode"/> is <see cref="F:Grammophone.DataAccess.TransactionMode.Deferred"/>,
+            the <paramref name="isolationLevel"/> parameter is ignored.
+            </remarks>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1.Create``1">
+            <summary>
+            Create a container proxy for a new object of type <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">The type of the object to be proxied.</typeparam>
+            <returns>
+            Returns a proxy for the new object if <see cref="P:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1.IsProxyCreationEnabled"/>
+            is true, else returns a pure object.
+            </returns>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1.Detach(System.Object)">
+            <summary>
+            Detach a tracked entity.
+            </summary>
+            <param name="entity">The entity to detach.</param>
+            <remarks>
+            If the entity is not tracked, this method does nothing.
+            </remarks>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1.SaveChanges">
+            <summary>
+            Save changes.
+            </summary>
+            <returns>Returns the number of objects written to the storage.</returns>
+            <remarks>
+            When in a transaction while <see cref="P:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1.TransactionMode"/> is <see cref="F:Grammophone.DataAccess.TransactionMode.Deferred"/>, 
+            this method does nothing and returns zero.
+            </remarks>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1.SaveChangesAsync">
+            <summary>
+            Save changes asynchronously.
+            </summary>
+            <returns>
+            Returns a task whose result is the number of objects written to the storage.
+            </returns>
+            <remarks>
+            When in a transaction while <see cref="P:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1.TransactionMode"/> is <see cref="F:Grammophone.DataAccess.TransactionMode.Deferred"/>, 
+            this method does nothing and returns zero.
+            </remarks>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1.SaveChangesAsync(System.Threading.CancellationToken)">
+            <summary>
+            Save changes asynchronously.
+            </summary>
+            <param name="cancellationToken">
+            A <see cref="T:System.Threading.CancellationToken"/> to observe while waiting for the task to complete.
+            </param>
+            <returns>
+            Returns a task whose result is the number of objects written to the storage.
+            </returns>
+            <remarks>
+            When in a transaction while <see cref="P:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1.TransactionMode"/> is <see cref="F:Grammophone.DataAccess.TransactionMode.Deferred"/>, 
+            this method does nothing and returns zero.
+            </remarks>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1.SetAsModified(System.Object)">
+            <summary>
+            Set the state of an entity as 'modified'.
+            </summary>
+            <param name="entity">The entity.</param>
+            <remarks>
+            This is useful for services data transfer,
+            and it typically follows the attachment of
+            a deserialized <paramref name="entity"/>.
+            </remarks>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1.TranslateException(System.SystemException)">
+            <summary>
+            Transform any database-specific or provider-specific exception
+            to descendants of <see cref="T:Grammophone.DataAccess.DataAccessException"/> when appropriate.
+            </summary>
+            <param name="exception">The exception to transform.</param>
+            <returns>Returns the transformed exception or the same exception when no transformation is needed.</returns>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFDomainContainerAdapter`1.Dispose">
+            <summary>
+            Close and dispose the domain container.
+            </summary>
+        </member>
+        <member name="T:Grammophone.DataAccess.EntityFramework.EFEntityEntry`1">
+            <summary>
+            Provides information about and control of an entity 
+            by implementing <see cref="T:Grammophone.DataAccess.IEntityEntry`1"/>.
+            </summary>
+            <typeparam name="E">The type of the entity.</typeparam>
+        </member>
+        <member name="P:Grammophone.DataAccess.EntityFramework.EFEntityEntry`1.Entity">
+            <summary>
+            The entity.
+            </summary>
+        </member>
+        <member name="P:Grammophone.DataAccess.EntityFramework.EFEntityEntry`1.State">
+            <summary>
+            The state of the <see cref="P:Grammophone.DataAccess.EntityFramework.EFEntityEntry`1.Entity"/>.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFEntityEntry`1.Collection``1(System.Linq.Expressions.Expression{System.Func{`0,System.Collections.Generic.ICollection{``0}}})">
+            <summary>
+            Gets an object that represents a collection property of this entity.
+            </summary>
+            <typeparam name="I">The type of items in the collection.</typeparam>
+            <param name="propertySelector">An expression representing the property.</param>
+            <returns>Returns an object representing the property.</returns>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFEntityEntry`1.ComplexProperty``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Gets an object that represents a complex property of this entity.
+            </summary>
+            <typeparam name="P">The type of the property.</typeparam>
+            <param name="propertySelector">An expression representing the property.</param>
+            <returns>Returns an object representing the property.</returns>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFEntityEntry`1.Property``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Gets an object that represents a scalar or complex property of this entity.
+            </summary>
+            <typeparam name="P">The type of the property.</typeparam>
+            <param name="propertySelector">An expression representing the property.</param>
+            <returns>Returns an object representing the property.</returns>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFEntityEntry`1.Reference``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Gets an object that represents a reference property of this entity.
+            </summary>
+            <typeparam name="P">The type of the property.</typeparam>
+            <param name="propertySelector">An expression representing the property.</param>
+            <returns>Returns an object representing the property.</returns>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFEntityEntry`1.Reload">
+            <summary>
+            Reloads the entity from the database overwriting any property 
+            values with values from the database.
+            The entity will be in the <see cref="F:Grammophone.DataAccess.TrackingState.Unchanged"/> state after calling this method.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFEntityEntry`1.ReloadAsync">
+            <summary>
+            Asynchronously reloads the entity from the database overwriting any property 
+            values with values from the database.
+            The entity will be in the <see cref="F:Grammophone.DataAccess.TrackingState.Unchanged"/> state after calling this method.
+            </summary>
+            <returns>Returns a task completing the action.</returns>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFEntityEntry`1.ReloadAsync(System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously reloads the entity from the database overwriting any property 
+            values with values from the database.
+            The entity will be in the <see cref="F:Grammophone.DataAccess.TrackingState.Unchanged"/> state after calling this method.
+            </summary>
+            <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> to observe while waiting for the task to complete.</param>
+            <returns>Returns a task completing the action.</returns>
+        </member>
+        <member name="T:Grammophone.DataAccess.EntityFramework.EFMemberEntry`3">
+            <summary>
+            Represents an entity member by implementing <see cref="T:Grammophone.DataAccess.IMemberEntry`2"/>.
+            </summary>
+            <typeparam name="E">The type of the entity.</typeparam>
+            <typeparam name="P">The type of the property.</typeparam>
+            <typeparam name="U">The type of the Entity Framework implementation for the entry.</typeparam>
+        </member>
+        <member name="F:Grammophone.DataAccess.EntityFramework.EFMemberEntry`3.underlyingMemberEntry">
+            <summary>
+            The underlying Entity Framework implementation of the member entry.
+            </summary>
+        </member>
+        <member name="F:Grammophone.DataAccess.EntityFramework.EFMemberEntry`3.entityEntry">
+            <summary>
+            The entity entry where this member entry belongs.
+            </summary>
+        </member>
+        <member name="P:Grammophone.DataAccess.EntityFramework.EFMemberEntry`3.CurrentValue">
+            <summary>
+            The current value of the property.
+            </summary>
+        </member>
+        <member name="P:Grammophone.DataAccess.EntityFramework.EFMemberEntry`3.EntityEntry">
+            <summary>
+            The entity entry where this member entry belongs.
+            </summary>
+        </member>
+        <member name="P:Grammophone.DataAccess.EntityFramework.EFMemberEntry`3.Name">
+            <summary>
+            The name of the property.
+            </summary>
+        </member>
+        <member name="T:Grammophone.DataAccess.EntityFramework.EFPropertyEntry`3">
+            <summary>
+            Represents a scalar or complex property by 
+            implementing <see cref="T:Grammophone.DataAccess.IPropertyEntry`2"/>.
+            </summary>
+            <typeparam name="E">The type of the entity.</typeparam>
+            <typeparam name="P">The type of the property.</typeparam>
+            <typeparam name="U">The type of the Entity Framework implementation for the entry.</typeparam>
+        </member>
+        <member name="P:Grammophone.DataAccess.EntityFramework.EFPropertyEntry`3.IsModified">
+            <summary>
+            If true, the property is marked as modified.
+            </summary>
+        </member>
+        <member name="P:Grammophone.DataAccess.EntityFramework.EFPropertyEntry`3.OriginalValue">
+            <summary>
+            The original value of the property, before any modification.
+            </summary>
+        </member>
+        <member name="T:Grammophone.DataAccess.EntityFramework.EFPropertyEntry`2">
+            <summary>
+            Represents a scalar or complex entity property by 
+            implementing <see cref="T:Grammophone.DataAccess.IPropertyEntry`2"/>.
+            </summary>
+            <typeparam name="E">The type of the entity.</typeparam>
+            <typeparam name="P">The type of the property.</typeparam>
+        </member>
+        <member name="T:Grammophone.DataAccess.EntityFramework.EFQuery`2">
+            <summary>
+            Implementatin of <see cref="T:Grammophone.DataAccess.IEntityQuery`1"/> using
+            Entity Framework.
+            </summary>
+            <typeparam name="E">
+            The type of the entities.
+            </typeparam>
+            <typeparam name="Q">
+            The type of the Entity Framework query object.
+            Must be derived from <see cref="T:System.Data.Entity.Infrastructure.DbQuery`1"/>.
+            </typeparam>
+        </member>
+        <member name="F:Grammophone.DataAccess.EntityFramework.EFQuery`2.dbQuery">
+            <summary>
+            The underlying Entity Framework query object.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFQuery`2.#ctor(`1)">
+            <summary>
+            Create.
+            </summary>
+            <param name="dbQuery">The entity framework query object.</param>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFQuery`2.AsNoTracking">
+            <summary>
+            Returns a new query where the entities returned will not be cached in the
+            container.
+            </summary>
+            <returns>A new query with NoTracking applied.</returns>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFQuery`2.Include(System.String)">
+            <summary>
+            Specifies the related objects to include in the query results.
+            </summary>
+            <param name="path">
+            The dot-separated list of related objects to return in the query results.
+            </param>
+            <returns>
+            A new <see cref="T:Grammophone.DataAccess.IEntityQuery`1"/>> with the defined query path.
+            </returns>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFQuery`2.Include``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Specifies the related objects to include in the query results.
+            </summary>
+            <typeparam name="P">The type of navigation property being included.</typeparam>
+            <param name="pathExpression">A lambda expression representing the path to include.</param>
+            <returns>A new <see cref="T:System.Linq.IQueryable`1"/> with the defined query path.</returns>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFQuery`2.GetEnumerator">
+            <summary>
+            Executes the query and obtains an enumerator for the results.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFQuery`2.Equals(System.Object)">
+            <summary>
+            The implementation is forwarded to the underlying
+            Entity Framework query.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFQuery`2.GetHashCode">
+            <summary>
+            The implementation is forwarded to the underlying
+            Entity Framework query.
+            </summary>
+        </member>
+        <member name="T:Grammophone.DataAccess.EntityFramework.EFReferenceEntry`2">
+            <summary>
+            Represents a reference property by 
+            implementing <see cref="T:Grammophone.DataAccess.IReferenceEntry`2"/>.
+            </summary>
+            <typeparam name="E">The type of the entity.</typeparam>
+            <typeparam name="P">The type of the property.</typeparam>
+        </member>
+        <member name="P:Grammophone.DataAccess.EntityFramework.EFReferenceEntry`2.IsLoaded">
+            <summary>
+            Determines or sets whether the relation has been loaded from the database.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFReferenceEntry`2.Load">
+            <summary>
+            Loads the relation from the database. 
+            Note that entities that already exist in the <see cref="T:Grammophone.DataAccess.IDomainContainer"/> 
+            are not overwritten with values from the database.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFReferenceEntry`2.LoadAsync">
+            <summary>
+            Asynchronously loads the relation from the database. 
+            Note that entities that already exist in the <see cref="T:Grammophone.DataAccess.IDomainContainer"/> 
+            are not overwritten with values from the database.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFReferenceEntry`2.LoadAsync(System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously loads the relation from the database. 
+            Note that entities that already exist in the <see cref="T:Grammophone.DataAccess.IDomainContainer"/> 
+            are not overwritten with values from the database.
+            </summary>
+            <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> to observe while waiting for the task to complete.</param>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFReferenceEntry`2.Query">
+            <summary>
+            Returns the query that would be used to load this entity from the database.
+            The returned query can be modified using LINQ to perform filtering 
+            or operations in the database.
+            </summary>
+        </member>
+        <member name="T:Grammophone.DataAccess.EntityFramework.EFSet`1">
+            <summary>
+            An <see cref="T:Grammophone.DataAccess.IEntitySet`1"/> implementation based on
+            Entity Framework's <see cref="T:System.Data.Entity.DbSet`1"/>.
+            </summary>
+            <typeparam name="E">The type of the entities.</typeparam>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFSet`1.#ctor(System.Data.Entity.DbSet{`0})">
+            <summary>
+            Create.
+            </summary>
+            <param name="dbSet">The entity framework set.</param>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFSet`1.Add(`0)">
+            <summary>
+            Adds the given entity to the container underlying the set 
+            in the Added state such that it will be inserted into the database when 
+            <see cref="M:Grammophone.DataAccess.IDomainContainer.SaveChanges"/> is called.
+            </summary>
+            <param name="entity">The entity to add.</param>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFSet`1.AddRange(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Adds the given collection of entities into the set 
+            with each entity being put into the Added state such that it 
+            will be inserted into the database 
+            when <see cref="M:Grammophone.DataAccess.IDomainContainer.SaveChanges"/> is called.
+            </summary>
+            <param name="entities"></param>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFSet`1.Attach(`0)">
+            <summary>
+            Attaches the given entity to the container underlying the set.
+            That is, the entity is placed into the container in the Unchanged state,
+            just as if it had been read from the database.
+            </summary>
+            <param name="entity">The entity to attach.</param>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFSet`1.Create">
+            <summary>
+            Create an entity of type <typeparamref name="E"/>.
+            Note that this instance is NOT added or attached to the set.
+            The instance returned will be a proxy if the underlying container 
+            is configured to create proxies and the entity type meets 
+            the requirements for creating a proxy. 
+            </summary>
+            <returns>Returns the new entity.</returns>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFSet`1.Create``1">
+            <summary>
+            Create an entity of type <typeparamref name="E"/>
+            or a descendant type.
+            Note that this instance is NOT added or attached to the set.
+            The instance returned will be a proxy if the underlying container 
+            is configured to create proxies and the entity type meets 
+            the requirements for creating a proxy. 
+            </summary>
+            <typeparam name="T">
+            The type of entity to create.
+            It must be derived from <typeparamref name="E"/>.
+            </typeparam>
+            <returns>Returns the new entity.</returns>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFSet`1.Find(System.Object[])">
+            <summary>
+            Finds an entity with the given primary key values.
+            If an entity with the given primary key values exists in the container,
+            then it is returned immediately without making a request to the store.
+            Otherwise, a request is made to the store for an entity with 
+            the given primary key values and this entity, if found,
+            is attached to the container and returned.
+            If no entity is found in the container or the store, then null is returned.
+            </summary>
+            <param name="keys">The values of the primary key for the entity to be found.</param>
+            <returns>The entity found, or null.</returns>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFSet`1.Remove(`0)">
+            <summary>
+            Marks the given entity as Deleted such that it will be deleted 
+            from the database when SaveChanges is called.
+            Note that the entity must exist in the container in some other state
+            before this method is called. 
+            </summary>
+            <param name="entity">The entity to remove.</param>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFSet`1.RemoveRange(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Removes the given collection of entities from the container underlying 
+            the set with each entity being put into the Deleted state such that
+            it will be deleted from the database when SaveChanges is called.
+            </summary>
+            <param name="entities">The entities to remove.</param>
+        </member>
+        <member name="T:Grammophone.DataAccess.EntityFramework.EFTransaction">
+            <summary>
+            An implementation of <see cref="T:Grammophone.DataAccess.ITransaction"/> using
+            the Entity Framework's <see cref="T:System.Data.Entity.DbContextTransaction"/>.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFTransaction.Commit">
+            <summary>
+            Marks the transaction as valid for commit.
+            Actual committing takes place when all nested transactions are
+            disposed and marked as committed.
+            If this method or <see cref="M:Grammophone.DataAccess.EntityFramework.EFTransaction.CommitAsync"/> or <see cref="M:Grammophone.DataAccess.EntityFramework.EFTransaction.Pass"/> has not been called when
+            method <see cref="M:System.IDisposable.Dispose"/> is invoked, the
+            transaction is marked for rollback. A <see cref="M:Grammophone.DataAccess.IDomainContainer.SaveChanges"/>
+            call is implied calling this method when the transaction
+            is not marked for rollback.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFTransaction.CommitAsync">
+            <summary>
+            Marks the transaction as valid for commit.
+            Actual committing takes place when all nested transactions are
+            disposed and marked as committed.
+            If this method or <see cref="M:Grammophone.DataAccess.EntityFramework.EFTransaction.Commit"/> or <see cref="M:Grammophone.DataAccess.EntityFramework.EFTransaction.Pass"/> has not been called when
+            method <see cref="M:System.IDisposable.Dispose"/> is invoked, the
+            transaction is marked for rollback. A <see cref="M:Grammophone.DataAccess.IDomainContainer.SaveChangesAsync"/>
+            call is implied calling this method when the transaction
+            is not marked for rollback.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFTransaction.Pass">
+            <summary>
+            Marks the transaction valid for commit but does not save.
+            Prevents rollback of higher nesting transactions;
+            thus passes the decision whether to save to the higher transactions.
+            If this method or <see cref="M:Grammophone.DataAccess.EntityFramework.EFTransaction.Commit"/> or <see cref="M:Grammophone.DataAccess.EntityFramework.EFTransaction.CommitAsync"/> has not been called when
+            method <see cref="M:System.IDisposable.Dispose"/> is invoked, the
+            transaction is marked for rollback.
+            </summary>
+        </member>
+        <member name="E:Grammophone.DataAccess.EntityFramework.EFTransaction.Succeeding">
+            <summary>
+            Fired when the whole transaction is committed successfully.
+            </summary>
+        </member>
+        <member name="E:Grammophone.DataAccess.EntityFramework.EFTransaction.RollingBack">
+            <summary>
+            Fired when the whole transaction is rolled back.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.EFTransaction.Dispose">
+            <summary>
+            Cleans up the transaction. If the transaction
+            has not been committed, it is rolled back.
+            </summary>
+        </member>
+        <member name="T:Grammophone.DataAccess.EntityFramework.IExceptionTransformer">
+            <summary>
+            Contract for translators of exceptions from various database types to
+            normalized <see cref="T:Grammophone.DataAccess.DataAccessException"/> descendants.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.IExceptionTransformer.TranslateDbException(System.Data.Common.DbException)">
+            <summary>
+            Transform an exception from the database provider.
+            </summary>
+            <param name="dbException">The exception thrown from the database provider.</param>
+            <returns>Returns the transformed exception.</returns>
+        </member>
+        <member name="T:Grammophone.DataAccess.EntityFramework.SqlServerExceptionTransformer">
+            <summary>
+            Translates <see cref="T:System.Data.Entity.Infrastructure.DbUpdateException"/>s to descendans
+            of <see cref="T:Grammophone.DataAccess.DataAccessException"/> when the data provider is SQL Server.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.SqlServerExceptionTransformer.TranslateDbException(System.Data.Common.DbException)">
+            <summary>
+            Transform an exception from the database provider.
+            </summary>
+            <param name="dbException">The exception thrown from the database provider.</param>
+            <returns>Returns the transformed exception.</returns>
+        </member>
+        <member name="T:Grammophone.DataAccess.EntityFramework.TypeConversions">
+            <summary>
+            Used to convert from and to Entity Framework types.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.TypeConversions.EntityStateToTrackingState(System.Data.Entity.EntityState)">
+            <summary>
+            Convert from <see cref="T:System.Data.Entity.EntityState"/> to <see cref="T:Grammophone.DataAccess.TrackingState"/>.
+            </summary>
+        </member>
+        <member name="M:Grammophone.DataAccess.EntityFramework.TypeConversions.TrackingStateToEntityState(Grammophone.DataAccess.TrackingState)">
+            <summary>
+            Convert from <see cref="T:Grammophone.DataAccess.TrackingState"/> to <see cref="T:System.Data.Entity.EntityState"/>.
+            </summary>
+        </member>
+    </members>
+</doc>

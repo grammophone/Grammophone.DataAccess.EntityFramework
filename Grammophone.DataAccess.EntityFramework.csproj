@@ -5,13 +5,16 @@
     <AssemblyTitle>Grammophone.DataAccess.EntityFramework</AssemblyTitle>
     <Product>Grammophone.DataAccess.EntityFramework</Product>
     <Copyright>Copyright ©  2016</Copyright>
-    <DocumentationFile>bin\$(Configuration)\Grammophone.DataAccess.EntityFramework.XML</DocumentationFile>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\Grammophone.DataAccess.EntityFramework.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net472|AnyCPU'">
+    <DocumentationFile>C:\Projects\dotNet\Repositories\Solutions\LifeAccount.CoreDevelopment\Components\Grammophone.DataAccess.EntityFramework\Grammophone.DataAccess.EntityFramework.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
 		<PackageReference Include="EntityFramework" Version="6.4.4" />
