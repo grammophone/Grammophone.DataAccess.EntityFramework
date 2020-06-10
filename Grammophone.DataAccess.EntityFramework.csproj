@@ -13,9 +13,6 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net472|AnyCPU'">
-    <DocumentationFile>C:\Projects\dotNet\Repositories\Solutions\LifeAccount.CoreDevelopment\Components\Grammophone.DataAccess.EntityFramework\Grammophone.DataAccess.EntityFramework.xml</DocumentationFile>
-  </PropertyGroup>
   <ItemGroup>
 		<PackageReference Include="EntityFramework" Version="6.4.4" />
 	</ItemGroup>
