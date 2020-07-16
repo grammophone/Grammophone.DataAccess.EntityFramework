@@ -1,5 +1,5 @@
 # Grammophone.DataAccess.EntityFramework
-This is the Entity Framework implementation of the data access layer for the integrated session system.
+This dual-target .NET Framework and .NET Standard 2.1 library is the Entity Framework (classic) implementation of the data access layer for the integrated session system.
 The data access layer can also be used independently. It offers options implementing the data access contract
 set in [Grammophone.DataAccess](https://github.com/grammophone/Grammophone.DataAccess) library.
 It is part of the 3rd generation of the integrated session system which will support SaaS, 
