@@ -581,6 +581,42 @@ namespace Grammophone.DataAccess.EntityFramework
 			}
 		}
 
+		internal async Task OnCommitTransactionAsync(CancellationToken cancellationToken)
+		{
+			if (!votedForRollback)
+			{
+				switch (this.TransactionMode)
+				{
+					case TransactionMode.Real:
+						await SaveChangesAsync(cancellationToken);
+
+						if (transactionNestingLevel == 1 && dbContextTransaction != null)
+						{
+							dbContextTransaction.Commit();
+						}
+
+						break;
+
+					case TransactionMode.Deferred:
+						if (transactionNestingLevel == 1)
+						{
+							try
+							{
+								this.TransactionMode = TransactionMode.Real;
+
+								await SaveChangesAsync(cancellationToken);
+							}
+							finally
+							{
+								this.TransactionMode = TransactionMode.Deferred;
+							}
+						}
+
+						break;
+				}
+			}
+		}
+
 		#endregion
 
 		#region Private methods
