@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Common;
 using System.Data.Entity;
+using System.Data.Entity.Core.Metadata.Edm;
+using System.Data.Entity.Core.Objects.DataClasses;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 using System.Linq;
@@ -191,6 +193,8 @@ namespace Grammophone.DataAccess.EntityFramework
 
 			try
 			{
+				DeleteOrphanEntries();
+
 				int changesCount = base.SaveChanges();
 
 				return changesCount;
@@ -221,6 +225,8 @@ namespace Grammophone.DataAccess.EntityFramework
 
 			try
 			{
+				DeleteOrphanEntries();
+
 				int changesCount = await base.SaveChangesAsync();
 
 				return changesCount;
@@ -254,6 +260,8 @@ namespace Grammophone.DataAccess.EntityFramework
 
 			try
 			{
+				DeleteOrphanEntries();
+
 				int changesCount = await base.SaveChangesAsync(cancellationToken);
 
 				return changesCount;
@@ -620,6 +628,36 @@ namespace Grammophone.DataAccess.EntityFramework
 		#endregion
 
 		#region Private methods
+
+		private void DeleteOrphanEntries()
+		{
+			if (!this.IsProxyCreationEnabled)
+			{
+				this.ChangeTracker.DetectChanges();
+			}
+
+			var objectContext = ((IObjectContextAdapter)this).ObjectContext;
+
+			var orphanEntityEntries =
+				from entry in objectContext.ObjectStateManager.GetObjectStateEntries(EntityState.Modified)
+				where !entry.IsRelationship
+				let relationshipManager = entry.RelationshipManager
+				let orphanRelatedEnds = from relatedEnd in relationshipManager.GetAllRelatedEnds().OfType<EntityReference>()
+																where relatedEnd.EntityKey == null // No foreign key...
+																let associationSet = (AssociationSet)relatedEnd.RelationshipSet
+																let associationEndMembers = from associationSetEnd in associationSet.AssociationSetEnds
+																														where associationSetEnd.EntitySet != entry.EntitySet // ... not the end pointing to the entry
+																														select associationSetEnd.CorrespondingAssociationEndMember
+																where associationEndMembers.Any(e => e.RelationshipMultiplicity == RelationshipMultiplicity.One) // ..but foreign key required.
+																select relatedEnd
+				where orphanRelatedEnds.Any()
+				select entry;
+
+			foreach (var orphanEntityEntry in orphanEntityEntries)
+			{
+				orphanEntityEntry.Delete();
+			}
+		}
 
 		private void CleanupCurrentTransaction()
 		{
