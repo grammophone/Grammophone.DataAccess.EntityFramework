@@ -645,10 +645,10 @@ namespace Grammophone.DataAccess.EntityFramework
 				let orphanRelatedEnds = from relatedEnd in relationshipManager.GetAllRelatedEnds().OfType<EntityReference>()
 																where relatedEnd.EntityKey == null // No foreign key...
 																let associationSet = (AssociationSet)relatedEnd.RelationshipSet
-																let associationEndMembers = from associationSetEnd in associationSet.AssociationSetEnds
-																														where associationSetEnd.EntitySet != entry.EntitySet // ... not the end pointing to the entry
-																														select associationSetEnd.CorrespondingAssociationEndMember
-																where associationEndMembers.Any(e => e.RelationshipMultiplicity == RelationshipMultiplicity.One) // ..but foreign key required.
+																let sourceSetEnd = associationSet.AssociationSetEnds.Single(ase => ase.Name == relatedEnd.SourceRoleName)
+																let targetSetEnd = associationSet.AssociationSetEnds.Single(ase => ase.Name == relatedEnd.TargetRoleName)
+																where sourceSetEnd.CorrespondingAssociationEndMember.RelationshipMultiplicity != RelationshipMultiplicity.One
+																&& targetSetEnd.CorrespondingAssociationEndMember.RelationshipMultiplicity == RelationshipMultiplicity.One
 																select relatedEnd
 				where orphanRelatedEnds.Any()
 				select entry;
