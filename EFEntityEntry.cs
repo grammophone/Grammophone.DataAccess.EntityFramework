@@ -22,6 +22,11 @@ namespace Grammophone.DataAccess.EntityFramework
 
 		private readonly DbEntityEntry<E> underlyingEntityEntry;
 
+		/// <summary>
+		/// Backing field of the <see cref="PropertiesByName"/> property, initialized just-in-time and cached.
+		/// </summary>
+		private IReadOnlyDictionary<string, IPropertyEntry<E, object>> propertiesByName;
+
 		#endregion
 
 		#region Construction
@@ -54,6 +59,15 @@ namespace Grammophone.DataAccess.EntityFramework
 			set
 			{
 				underlyingEntityEntry.State = TypeConversions.TrackingStateToEntityState(value);
+			}
+		}
+
+		/// <inheritdoc/>
+		public IReadOnlyDictionary<string, IPropertyEntry<E, object>> PropertiesByName
+		{
+			get
+			{
+				return propertiesByName ?? (propertiesByName = CreatePropertiesByName());
 			}
 		}
 
@@ -166,6 +180,21 @@ namespace Grammophone.DataAccess.EntityFramework
 		public async Task ReloadAsync(CancellationToken cancellationToken)
 		{
 			await underlyingEntityEntry.ReloadAsync(cancellationToken);
+		}
+
+		#endregion
+
+		#region Private methods
+
+		private IReadOnlyDictionary<string, IPropertyEntry<E, object>> CreatePropertiesByName()
+		{
+			var propertyNames = this.underlyingEntityEntry.CurrentValues.PropertyNames;
+
+			var properties = from propertyName in propertyNames
+											 let underlyingPropertyEntry = underlyingEntityEntry.Property<object>(propertyName)
+											 select ((IPropertyEntry<E, object>)new EFPropertyEntry<E, object>(this, underlyingPropertyEntry));
+
+			return properties.ToDictionary(property => property.Name);
 		}
 
 		#endregion
