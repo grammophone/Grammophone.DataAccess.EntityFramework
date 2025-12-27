@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -42,6 +44,32 @@ namespace Grammophone.DataAccess.EntityFramework
 			set
 			{
 				underlyingMemberEntry.IsModified = value;
+			}
+		}
+
+		/// <inheritdoc/>
+		public bool IsPrimitive
+		{
+			get
+			{
+				if (underlyingMemberEntry.CurrentValue == null) return false;
+
+				var type = underlyingMemberEntry.CurrentValue.GetType();
+
+				return typeof(ValueType).IsAssignableFrom(type);
+			}
+		}
+
+		/// <inheritdoc/>
+		public bool IsComplexType
+		{
+			get
+			{
+				if (underlyingMemberEntry.CurrentValue == null) return false;
+
+				var type = underlyingMemberEntry.CurrentValue.GetType();
+
+				return type.GetCustomAttribute(typeof(ComplexTypeAttribute), true) != null;
 			}
 		}
 
