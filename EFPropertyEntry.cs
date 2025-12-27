@@ -47,32 +47,6 @@ namespace Grammophone.DataAccess.EntityFramework
 			}
 		}
 
-		/// <inheritdoc/>
-		public bool IsPrimitive
-		{
-			get
-			{
-				if (underlyingMemberEntry.CurrentValue == null) return false;
-
-				var type = underlyingMemberEntry.CurrentValue.GetType();
-
-				return typeof(ValueType).IsAssignableFrom(type);
-			}
-		}
-
-		/// <inheritdoc/>
-		public bool IsComplexType
-		{
-			get
-			{
-				if (underlyingMemberEntry.CurrentValue == null) return false;
-
-				var type = underlyingMemberEntry.CurrentValue.GetType();
-
-				return type.GetCustomAttribute(typeof(ComplexTypeAttribute), true) != null;
-			}
-		}
-
 		/// <summary>
 		/// The original value of the property, before any modification.
 		/// </summary>
