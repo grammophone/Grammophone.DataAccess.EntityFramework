@@ -188,7 +188,7 @@ namespace Grammophone.DataAccess.EntityFramework
 
 		private IReadOnlyDictionary<string, IPropertyEntry<E, object>> CreatePropertiesByName()
 		{
-			var propertyNames = this.underlyingEntityEntry.CurrentValues.PropertyNames;
+			var propertyNames = underlyingEntityEntry.State == EntityState.Deleted ? underlyingEntityEntry.OriginalValues.PropertyNames : underlyingEntityEntry.CurrentValues.PropertyNames;
 
 			var properties = from propertyName in propertyNames
 											 let underlyingPropertyEntry = underlyingEntityEntry.Property<object>(propertyName)
