@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data.Common;
 using System.Data.Entity;
 using System.Data.Entity.Core.Metadata.Edm;
+using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Core.Objects.DataClasses;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
@@ -35,6 +36,8 @@ namespace Grammophone.DataAccess.EntityFramework
 
 		private readonly ICollection<EFTransaction> openTransactions = new List<EFTransaction>();
 
+		private readonly ISet<ObjectStateEntry> addedEntries;
+
 		#endregion
 
 		#region Construction
@@ -49,6 +52,8 @@ namespace Grammophone.DataAccess.EntityFramework
 		public EFDomainContainer(TransactionMode transactionMode)
 		{
 			this.TransactionMode = transactionMode;
+
+			addedEntries = new HashSet<ObjectStateEntry>();
 
 			Initialize();
 
@@ -81,6 +86,8 @@ namespace Grammophone.DataAccess.EntityFramework
 			: base(nameOrConnectionString)
 		{
 			this.TransactionMode = transactionMode;
+
+			addedEntries = new HashSet<ObjectStateEntry>();
 
 			Initialize();
 
@@ -191,6 +198,8 @@ namespace Grammophone.DataAccess.EntityFramework
 		{
 			if (TransactionMode == TransactionMode.Deferred && transactionNestingLevel >= 1) return 0;
 
+			GatherAddedEntries();
+
 			try
 			{
 				DeleteOrphanEntries();
@@ -206,6 +215,10 @@ namespace Grammophone.DataAccess.EntityFramework
 			catch (DbEntityValidationException validationException)
 			{
 				throw TranslateValidationException(validationException);
+			}
+			finally
+			{
+				OnAddedEntriesSaved();
 			}
 		}
 
@@ -223,6 +236,8 @@ namespace Grammophone.DataAccess.EntityFramework
 		{
 			if (TransactionMode == TransactionMode.Deferred && transactionNestingLevel >= 1) return 0;
 
+			GatherAddedEntries();
+
 			try
 			{
 				DeleteOrphanEntries();
@@ -238,6 +253,10 @@ namespace Grammophone.DataAccess.EntityFramework
 			catch (DbEntityValidationException validationException)
 			{
 				throw TranslateValidationException(validationException);
+			}
+			finally
+			{
+				OnAddedEntriesSaved();
 			}
 		}
 
@@ -258,6 +277,8 @@ namespace Grammophone.DataAccess.EntityFramework
 		{
 			if (TransactionMode == TransactionMode.Deferred && transactionNestingLevel >= 1) return 0;
 
+			GatherAddedEntries();
+
 			try
 			{
 				DeleteOrphanEntries();
@@ -273,6 +294,10 @@ namespace Grammophone.DataAccess.EntityFramework
 			catch (DbEntityValidationException validationException)
 			{
 				throw TranslateValidationException(validationException);
+			}
+			finally
+			{
+				OnAddedEntriesSaved();
 			}
 		}
 
@@ -836,6 +861,43 @@ namespace Grammophone.DataAccess.EntityFramework
 				 validationException,
 				 validationResults.ToArray()
 			);
+		}
+
+		private void OnAddedEntriesSaved()
+		{
+			// The added entities that were saved successfully must now have the 'unchanged' state.
+
+			var successfullySavedAddedEntries = addedEntries.Where(e => e.State == EntityState.Unchanged).ToArray();
+
+			foreach (var addedEntry in successfullySavedAddedEntries)
+			{
+				try
+				{
+					foreach (var entityListener in this.EntityListeners)
+					{
+						entityListener.OnAdded(addedEntry.Entity);
+					}
+				}
+				finally
+				{
+					addedEntries.Remove(addedEntry);
+				}
+			}
+
+			// If we reached this point with no exception, clear every remaining added entry, which could now be 'unmodified', to alleviate futore scanning during save.
+			addedEntries.Clear();
+		}
+
+		private IEnumerable<ObjectStateEntry> GetAddedEntries()
+		{
+			var objectContext = ((IObjectContextAdapter)this).ObjectContext;
+
+			return objectContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added);
+		}
+
+		private void GatherAddedEntries()
+		{
+			addedEntries.UnionWith(GetAddedEntries());
 		}
 
 		#endregion
