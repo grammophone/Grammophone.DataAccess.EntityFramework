@@ -873,6 +873,8 @@ namespace Grammophone.DataAccess.EntityFramework
 			{
 				try
 				{
+					if (addedEntry.Entity == null) continue;
+
 					foreach (var entityListener in this.EntityListeners)
 					{
 						entityListener.OnAdded(addedEntry.Entity);
