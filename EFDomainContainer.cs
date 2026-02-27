@@ -362,6 +362,15 @@ namespace Grammophone.DataAccess.EntityFramework
 			}
 		}
 
+		/// <inheritdoc/>
+		public void Attach<E>(E entity)
+			where E : class
+		{
+			if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+			Set<E>().Attach(entity);
+		}
+
 		/// <summary>
 		/// Detach a tracked entity.
 		/// </summary>

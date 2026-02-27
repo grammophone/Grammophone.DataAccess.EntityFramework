@@ -154,6 +154,10 @@ namespace Grammophone.DataAccess.EntityFramework
 		public T Create<T>() where T : class
 			=> this.InnerDomainContainer.Create<T>();
 
+		/// <inheritdoc/>
+		public void Attach<E>(E entity) where E : class
+			=> this.InnerDomainContainer.Attach(entity);
+
 		/// <summary>
 		/// Detach a tracked entity.
 		/// </summary>
