@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
 
 namespace Grammophone.DataAccess.EntityFramework
 {
 	/// <summary>
 	/// Translates <see cref="DbException"/>s to descendans
-	/// of <see cref="DataAccessException"/> when the data provider is SQL Server.
+	/// of <see cref="DataAccessException"/> when the data provider is the new Microsoft SQL Server cleint.
 	/// </summary>
-	public class SqlServerExceptionTransformer : IExceptionTransformer
+	public class MicrosoftSqlServerExceptionTransformer : IExceptionTransformer
 	{
 		/// <summary>
 		/// Transform an exception from the database provider.
@@ -36,5 +36,6 @@ namespace Grammophone.DataAccess.EntityFramework
 
 			return new IntegrityViolationException(sqlException);
 		}
+
 	}
 }
