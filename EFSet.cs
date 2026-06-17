@@ -21,8 +21,9 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// Create.
 		/// </summary>
 		/// <param name="dbSet">The entity framework set.</param>
-		public EFSet(DbSet<E> dbSet)
-			: base(dbSet)
+		/// <param name="domainContainer">The domain container which the query pertains to.</param>
+		public EFSet(DbSet<E> dbSet, IDomainContainer domainContainer)
+			: base(dbSet, domainContainer)
 		{
 		}
 

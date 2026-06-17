@@ -39,16 +39,25 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// Create.
 		/// </summary>
 		/// <param name="dbQuery">The entity framework query object.</param>
-		public EFQuery(Q dbQuery)
+		/// <param name="domainContainer">The domain container which the query pertains to.</param>
+		public EFQuery(Q dbQuery, IDomainContainer domainContainer)
 		{
 			if (dbQuery == null) throw new ArgumentNullException("dbQuery");
+			if (domainContainer == null) throw new ArgumentNullException(nameof(domainContainer));
 
 			this.dbQuery = dbQuery;
+			this.DomainContainer = domainContainer;
 		}
 
 		#endregion
 
 		#region IEntityQuery<E> Members
+
+		/// <inheritdoc/>
+		public IDomainContainer DomainContainer { get; }
+
+		/// <inheritdoc/>
+		public IQueryProvider NativeProvider => ((IQueryable)dbQuery).Provider;
 
 		/// <summary>
 		/// Returns a new query where the entities returned will not be cached in the
@@ -57,7 +66,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// <returns>A new query with NoTracking applied.</returns>
 		public IEntityQuery<E> AsNoTracking()
 		{
-			return new EFQuery<E, DbQuery<E>>(dbQuery.AsNoTracking());
+			return new EFQuery<E, DbQuery<E>>(dbQuery.AsNoTracking(), this.DomainContainer);
 		}
 
 		/// <summary>
@@ -71,7 +80,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// </returns>
 		public IEntityQuery<E> Include(string path)
 		{
-			return new EFQuery<E, DbQuery<E>>(dbQuery.Include(path));
+			return new EFQuery<E, DbQuery<E>>(dbQuery.Include(path), this.DomainContainer);
 		}
 
 		/// <summary>
