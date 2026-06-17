@@ -501,6 +501,15 @@ namespace Grammophone.DataAccess.EntityFramework
 			}
 		}
 
+		/// <summary>
+		/// Attempt to get a translator for terminal and non-terminal method expressions in queries.
+		/// If no such translator is supported, return null.
+		/// </summary>
+		public virtual QueryTranslator TryGetQueryTranslator()
+		{
+			throw new NotImplementedException();
+		}
+
 		#endregion
 
 		#region IContextOwner Members

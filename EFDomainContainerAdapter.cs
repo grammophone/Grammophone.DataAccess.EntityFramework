@@ -229,6 +229,13 @@ namespace Grammophone.DataAccess.EntityFramework
 		public Exception TranslateException(SystemException exception)
 			=> this.InnerDomainContainer.TranslateException(exception);
 
+		/// <summary>
+		/// Attempt to get a translator for terminal and non-terminal method expressions in queries.
+		/// If no such translator is supported, return null.
+		/// </summary>
+		public virtual QueryTranslator TryGetQueryTranslator()
+			=> this.InnerDomainContainer.TryGetQueryTranslator();
+
 		#endregion
 
 		#region IDisposable implementation
