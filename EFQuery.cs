@@ -21,7 +21,6 @@ namespace Grammophone.DataAccess.EntityFramework
 	/// Must be derived from <see cref="DbQuery{E}"/>.
 	/// </typeparam>
 	public class EFQuery<E, Q> : IEntityQuery<E>
-		where E : class
 		where Q : DbQuery<E>
 	{
 		#region Protected fields
