@@ -126,12 +126,12 @@ namespace Grammophone.DataAccess.EntityFramework
 
 		System.Linq.Expressions.Expression IQueryable.Expression
 		{
-			get { return ((IQueryable)dbQuery).Expression; }
+			get { throw new NotImplementedException(); }
 		}
 
 		IQueryProvider IQueryable.Provider
 		{
-			get { return ((IQueryable)dbQuery).Provider; }
+			get { throw new NotImplementedException(); }
 		}
 
 		#endregion
