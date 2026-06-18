@@ -89,11 +89,11 @@ namespace Grammophone.DataAccess.EntityFramework
 		{
 			get
 			{
-				return InnerDomainContainer.IsProxyCreationEnabled;
+				return this.InnerDomainContainer.IsProxyCreationEnabled;
 			}
 			set
 			{
-				InnerDomainContainer.IsProxyCreationEnabled = value;
+				this.InnerDomainContainer.IsProxyCreationEnabled = value;
 			}
 		}
 
