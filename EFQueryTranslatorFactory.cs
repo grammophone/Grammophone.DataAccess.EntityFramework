@@ -43,7 +43,7 @@ namespace Grammophone.DataAccess.EntityFramework
 			AddMapping(
 				mappings,
 				QueryExtensionMethodInfos.IncludeString,
-				GetGenericMethodDefinition(
+				MethodInfoCatalog.GetGenericMethodDefinition(
 					typeof(System.Data.Entity.QueryableExtensions),
 					nameof(System.Data.Entity.QueryableExtensions.Include),
 					typeof(IQueryable<>),
@@ -52,7 +52,7 @@ namespace Grammophone.DataAccess.EntityFramework
 			AddMapping(
 				mappings,
 				QueryExtensionMethodInfos.IncludeExpression,
-				GetGenericMethodDefinition(
+				MethodInfoCatalog.GetGenericMethodDefinition(
 					typeof(System.Data.Entity.QueryableExtensions),
 					nameof(System.Data.Entity.QueryableExtensions.Include),
 					typeof(IQueryable<>),
@@ -61,7 +61,7 @@ namespace Grammophone.DataAccess.EntityFramework
 			AddMapping(
 				mappings,
 				QueryExtensionMethodInfos.AsNoTracking,
-				GetGenericMethodDefinition(
+				MethodInfoCatalog.GetGenericMethodDefinition(
 					typeof(System.Data.Entity.QueryableExtensions),
 					nameof(System.Data.Entity.QueryableExtensions.AsNoTracking),
 					typeof(IQueryable<>)));
@@ -136,83 +136,7 @@ namespace Grammophone.DataAccess.EntityFramework
 
 		private static MethodInfo GetDbFunction(string methodName, params Type[] parameterTypes)
 		{
-			return GetMethod(typeof(DbFunctions), methodName, parameterTypes);
-		}
-
-		private static MethodInfo GetGenericMethodDefinition(
-			Type declaringType,
-			string methodName,
-			params Type[] parameterTypeDefinitions)
-		{
-			var methodInfo = GetMethod(
-				declaringType,
-				methodName,
-				methodInfoCandidate => methodInfoCandidate.IsGenericMethodDefinition,
-				parameterTypeDefinitions);
-
-			return methodInfo;
-		}
-
-		private static MethodInfo GetMethod(
-			Type declaringType,
-			string methodName,
-			params Type[] parameterTypes)
-		{
-			return GetMethod(
-				declaringType,
-				methodName,
-				methodInfo => !methodInfo.IsGenericMethod,
-				parameterTypes);
-		}
-
-		private static MethodInfo GetMethod(
-			Type declaringType,
-			string methodName,
-			Func<MethodInfo, bool> methodPredicate,
-			Type[] parameterTypes)
-		{
-			var methodInfo = TryGetMethod(declaringType, methodName, methodPredicate, parameterTypes);
-
-			if (methodInfo == null)
-			{
-				throw new InvalidOperationException(
-					$"Method '{methodName}' with the requested signature was not found in type '{declaringType.FullName}'.");
-			}
-
-			return methodInfo;
-		}
-
-		private static MethodInfo TryGetMethod(
-			Type declaringType,
-			string methodName,
-			Func<MethodInfo, bool> methodPredicate,
-			Type[] parameterTypes)
-		{
-			foreach (var methodInfo in declaringType.GetMethods(BindingFlags.Public | BindingFlags.Static))
-			{
-				if (methodInfo.Name != methodName || !methodPredicate(methodInfo)) continue;
-
-				var parameters = methodInfo.GetParameters();
-
-				if (parameters.Length != parameterTypes.Length) continue;
-
-				if (parameters.Select(p => NormalizeParameterType(p.ParameterType)).SequenceEqual(parameterTypes.Select(NormalizeParameterType)))
-				{
-					return methodInfo;
-				}
-			}
-
-			return null;
-		}
-
-		private static Type NormalizeParameterType(Type parameterType)
-		{
-			if (parameterType.IsGenericType && parameterType.ContainsGenericParameters)
-			{
-				return parameterType.GetGenericTypeDefinition();
-			}
-
-			return parameterType;
+			return MethodInfoCatalog.GetMethodInfo(typeof(DbFunctions), methodName, parameterTypes);
 		}
 
 		#endregion
