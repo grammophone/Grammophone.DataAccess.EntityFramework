@@ -108,7 +108,7 @@ namespace Grammophone.DataAccess.EntityFramework
 	/// The type of the Entity Framework query object.
 	/// Must be derived from <see cref="DbQuery{E}"/>.
 	/// </typeparam>
-	public class EFQuery<E, Q> : EFQuery<Q>, IEntityQuery<E>
+	public class EFQuery<E, Q> : EFQuery<Q>, IEntityQuery<E>, IOrderedQueryable<E>
 		where Q : IQueryable<E>
 	{
 		#region Construction
