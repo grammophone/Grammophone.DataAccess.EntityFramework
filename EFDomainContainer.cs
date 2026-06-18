@@ -38,10 +38,6 @@ namespace Grammophone.DataAccess.EntityFramework
 
 		private readonly ISet<ObjectStateEntry> addedEntries;
 
-		private static readonly QueryTranslator QueryTranslator = new QueryTranslator(
-			new EFTerminalMethodsAdapter(),
-			new Dictionary<System.Reflection.MethodInfo, MethodMapping>());
-
 		#endregion
 
 		#region Construction
@@ -511,7 +507,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// </summary>
 		public virtual QueryTranslator TryGetQueryTranslator()
 		{
-			return QueryTranslator;
+			return EFQueryTranslatorFactory.GetQueryTranslator();
 		}
 
 		#endregion
