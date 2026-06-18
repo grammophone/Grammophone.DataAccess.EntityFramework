@@ -10,6 +10,10 @@ using System.Threading.Tasks;
 
 namespace Grammophone.DataAccess.EntityFramework
 {
+	/// <summary>
+	/// Non-generic implementation of <see cref="IEntityQuery"/> using Entity Framework.
+	/// </summary>
+	/// <typeparam name="Q">The type of the Entity Framework query object.</typeparam>
 	public class EFQuery<Q> : IEntityQuery
 		where Q : IQueryable
 	{
@@ -54,6 +58,9 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// <inheritdoc/>
 		public IQueryProvider NativeProvider => NativeQuery.Provider;
 
+		/// <summary>
+		/// The translating provider associated with this query.
+		/// </summary>
 		public TranslatingQueryProvider TranslatingProvider
 		{
 			get
@@ -64,7 +71,7 @@ namespace Grammophone.DataAccess.EntityFramework
 
 		#endregion
 
-		#region IQueryable implementation
+		#region Explicit IQueryable implementation
 
 		IQueryProvider IQueryable.Provider
 		{
@@ -91,7 +98,7 @@ namespace Grammophone.DataAccess.EntityFramework
 	}
 
 	/// <summary>
-	/// Implementatin of <see cref="IEntityQuery{E}"/> using
+	/// Implementation of <see cref="IEntityQuery{E}"/> using
 	/// Entity Framework.
 	/// </summary>
 	/// <typeparam name="E">
@@ -117,7 +124,7 @@ namespace Grammophone.DataAccess.EntityFramework
 
 		#endregion
 
-		#region IEnumerable<E> Members
+		#region IEnumerable<E> implementation
 
 		/// <summary>
 		/// Executes the query and obtains an enumerator for the results.
