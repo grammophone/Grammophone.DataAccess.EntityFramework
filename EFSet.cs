@@ -39,7 +39,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// <param name="entity">The entity to add.</param>
 		public void Add(E entity)
 		{
-			dbQuery.Add(entity);
+			NativeQuery.Add(entity);
 		}
 
 		/// <summary>
@@ -51,7 +51,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// <param name="entities"></param>
 		public void AddRange(IEnumerable<E> entities)
 		{
-			dbQuery.AddRange(entities);
+			NativeQuery.AddRange(entities);
 		}
 
 		/// <summary>
@@ -62,7 +62,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// <param name="entity">The entity to attach.</param>
 		public void Attach(E entity)
 		{
-			dbQuery.Attach(entity);
+			NativeQuery.Attach(entity);
 		}
 
 		/// <summary>
@@ -75,7 +75,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// <returns>Returns the new entity.</returns>
 		public E Create()
 		{
-			return dbQuery.Create();
+			return NativeQuery.Create();
 		}
 
 		/// <summary>
@@ -93,7 +93,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// <returns>Returns the new entity.</returns>
 		public T Create<T>() where T : class, E
 		{
-			return dbQuery.Create<T>();
+			return NativeQuery.Create<T>();
 		}
 
 		/// <summary>
@@ -109,7 +109,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// <returns>The entity found, or null.</returns>
 		public E Find(params object[] keys)
 		{
-			return dbQuery.Find(keys);
+			return NativeQuery.Find(keys);
 		}
 
 		/// <summary>
@@ -121,7 +121,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// <param name="entity">The entity to remove.</param>
 		public void Remove(E entity)
 		{
-			dbQuery.Remove(entity);
+			NativeQuery.Remove(entity);
 		}
 
 		/// <summary>
@@ -132,7 +132,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// <param name="entities">The entities to remove.</param>
 		public void RemoveRange(IEnumerable<E> entities)
 		{
-			dbQuery.RemoveRange(entities);
+			NativeQuery.RemoveRange(entities);
 		}
 
 		#endregion

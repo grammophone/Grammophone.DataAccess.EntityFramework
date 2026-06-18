@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
@@ -9,6 +10,86 @@ using System.Threading.Tasks;
 
 namespace Grammophone.DataAccess.EntityFramework
 {
+	public class EFQuery<Q> : IEntityQuery
+		where Q : IQueryable
+	{
+		#region Private fields
+
+		private TranslatingQueryProvider translatingProvider;
+
+		#endregion
+
+		#region Construction
+
+		/// <summary>
+		/// Create.
+		/// </summary>
+		/// <param name="nativeQuery">The entity framework query object.</param>
+		/// <param name="domainContainer">The domain container which the query pertains to.</param>
+		public EFQuery(Q nativeQuery, IDomainContainer domainContainer)
+		{
+			if (nativeQuery == null) throw new ArgumentNullException("dbQuery");
+			if (domainContainer == null) throw new ArgumentNullException(nameof(domainContainer));
+
+			this.NativeQuery = nativeQuery;
+			this.DomainContainer = domainContainer;
+		}
+
+		#endregion
+
+		#region Public properties
+
+		/// <summary>
+		/// The underlying Entity Framework query object.
+		/// </summary>
+		public Q NativeQuery { get; }
+
+		#endregion
+
+		#region IEntityQuery<E> Members
+
+		/// <inheritdoc/>
+		public IDomainContainer DomainContainer { get; }
+
+		/// <inheritdoc/>
+		public IQueryProvider NativeProvider => NativeQuery.Provider;
+
+		public TranslatingQueryProvider TranslatingProvider
+		{
+			get
+			{
+				return translatingProvider ??= new EFTranslatingQueryProvider(this.NativeProvider, this.DomainContainer);
+			}
+		}
+
+		#endregion
+
+		#region IQueryable implementation
+
+		IQueryProvider IQueryable.Provider
+		{
+			get
+			{
+				return translatingProvider ??= new EFTranslatingQueryProvider(this.NativeProvider, this.DomainContainer);
+			}
+		}
+
+		Type IQueryable.ElementType => NativeQuery.ElementType;
+
+		System.Linq.Expressions.Expression IQueryable.Expression => NativeQuery.Expression;
+
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		{
+			var translatedExpression = this.TranslatingProvider.TranslateExpression(NativeQuery.Expression);
+
+			var translatedQuery = this.NativeProvider.CreateQuery(translatedExpression);
+
+			return translatedQuery.GetEnumerator();
+		}
+
+		#endregion
+	}
+
 	/// <summary>
 	/// Implementatin of <see cref="IEntityQuery{E}"/> using
 	/// Entity Framework.
@@ -20,18 +101,9 @@ namespace Grammophone.DataAccess.EntityFramework
 	/// The type of the Entity Framework query object.
 	/// Must be derived from <see cref="DbQuery{E}"/>.
 	/// </typeparam>
-	public class EFQuery<E, Q> : IEntityQuery<E>
-		where Q : DbQuery<E>
+	public class EFQuery<E, Q> : EFQuery<Q>, IEntityQuery<E>
+		where Q : IQueryable<E>
 	{
-		#region Protected fields
-
-		/// <summary>
-		/// The underlying Entity Framework query object.
-		/// </summary>
-		protected readonly Q dbQuery;
-
-		#endregion
-
 		#region Construction
 
 		/// <summary>
@@ -39,58 +111,8 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// </summary>
 		/// <param name="dbQuery">The entity framework query object.</param>
 		/// <param name="domainContainer">The domain container which the query pertains to.</param>
-		public EFQuery(Q dbQuery, IDomainContainer domainContainer)
+		public EFQuery(Q dbQuery, IDomainContainer domainContainer) : base(dbQuery, domainContainer)
 		{
-			if (dbQuery == null) throw new ArgumentNullException("dbQuery");
-			if (domainContainer == null) throw new ArgumentNullException(nameof(domainContainer));
-
-			this.dbQuery = dbQuery;
-			this.DomainContainer = domainContainer;
-		}
-
-		#endregion
-
-		#region IEntityQuery<E> Members
-
-		/// <inheritdoc/>
-		public IDomainContainer DomainContainer { get; }
-
-		/// <inheritdoc/>
-		public IQueryProvider NativeProvider => ((IQueryable)dbQuery).Provider;
-
-		/// <summary>
-		/// Returns a new query where the entities returned will not be cached in the
-		/// container.
-		/// </summary>
-		/// <returns>A new query with NoTracking applied.</returns>
-		public IEntityQuery<E> AsNoTracking()
-		{
-			return new EFQuery<E, DbQuery<E>>(dbQuery.AsNoTracking(), this.DomainContainer);
-		}
-
-		/// <summary>
-		/// Specifies the related objects to include in the query results.
-		/// </summary>
-		/// <param name="path">
-		/// The dot-separated list of related objects to return in the query results.
-		/// </param>
-		/// <returns>
-		/// A new <see cref="IEntityQuery{E}"/>> with the defined query path.
-		/// </returns>
-		public IEntityQuery<E> Include(string path)
-		{
-			return new EFQuery<E, DbQuery<E>>(dbQuery.Include(path), this.DomainContainer);
-		}
-
-		/// <summary>
-		/// Specifies the related objects to include in the query results.
-		/// </summary>
-		/// <typeparam name="P">The type of navigation property being included.</typeparam>
-		/// <param name="pathExpression">A lambda expression representing the path to include.</param>
-		/// <returns>A new <see cref="IQueryable{E}"/> with the defined query path.</returns>
-		public IQueryable<E> Include<P>(Expression<Func<E, P>> pathExpression)
-		{
-			return dbQuery.Include(pathExpression);
 		}
 
 		#endregion
@@ -102,35 +124,11 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// </summary>
 		public IEnumerator<E> GetEnumerator()
 		{
-			return ((IEnumerable<E>)dbQuery).GetEnumerator();
-		}
+			var translatedExpression = this.TranslatingProvider.TranslateExpression(NativeQuery.Expression);
 
-		#endregion
+			var translatedQuery = this.NativeProvider.CreateQuery<E>(translatedExpression);
 
-		#region IEnumerable Members
-
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		{
-			return ((IEnumerable<E>)dbQuery).GetEnumerator();
-		}
-
-		#endregion
-
-		#region IQueryable Members
-
-		Type IQueryable.ElementType
-		{
-			get { return ((IQueryable)dbQuery).ElementType; }
-		}
-
-		System.Linq.Expressions.Expression IQueryable.Expression
-		{
-			get { throw new NotImplementedException(); }
-		}
-
-		IQueryProvider IQueryable.Provider
-		{
-			get { throw new NotImplementedException(); }
+			return translatedQuery.GetEnumerator();
 		}
 
 		#endregion
@@ -147,7 +145,7 @@ namespace Grammophone.DataAccess.EntityFramework
 
 			if (other == null) return false;
 
-			return dbQuery.Equals(other.dbQuery);
+			return NativeQuery.Equals(other.NativeQuery);
 		}
 
 		/// <summary>
@@ -156,7 +154,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// </summary>
 		public override int GetHashCode()
 		{
-			return dbQuery.GetHashCode();
+			return NativeQuery.GetHashCode();
 		}
 
 		#endregion
