@@ -94,7 +94,9 @@ If the project uses `Microsoft.Data.SqlClient`, use `MicrosoftSqlServerException
 
 ## Proxy Creation
 
-EF6 can create proxy entities through `DbSet<T>.Create()`. `EFDomainContainer.Create<T>()` and `EFSet<T>.Create()` use that behavior, subject to EF6 proxy requirements such as virtual properties and proxy creation being enabled.
+Use `IDomainContainer.Create<T>()` or `IEntitySet<T>.Create()` when application code needs a new entity instance. The EF6 implementation will create a proxy instance when proxy creation is enabled and the entity type satisfies the provider requirements.
+
+For reliable proxy behavior, every mapped entity property must be `virtual` without exception, including scalar properties, key properties, reference navigations and collection navigations. This keeps newly created entities consistent with entities materialized by the provider.
 
 ## Transactions
 
