@@ -1,34 +1,67 @@
 # Grammophone.DataAccess.EntityFramework
-This dual-target .NET Framework and .NET Standard 2.1 library is the Entity Framework (classic) implementation of the data access layer for the integrated session system.
-The data access layer can also be used independently. It offers options implementing the data access contract
-set in [Grammophone.DataAccess](https://github.com/grammophone/Grammophone.DataAccess) library.
-It is part of the 3rd generation of the integrated session system which will support SaaS, 
-workflow and accounting scenarios.
 
-The library offers two base classes to implement the centerpiece `IDomainContainer` interface
-defined in [Grammophone.DataAccess](https://github.com/grammophone/Grammophone.DataAccess), depending on the
-level of desired abstraction level from Entity Framework's types.
+`Grammophone.DataAccess.EntityFramework` is the Entity Framework 6 implementation of the `Grammophone.DataAccess` abstractions.
 
-### Partial abstraction with `EFDomainContainer` base class
-This base class is derived directly from Entity Framework's `DbContext` and it is the easiest way
-to define a domain container. In your domain container interfaces, define
-entity sets properties using Entity Framework's `IDbSet<E>` and proceed as with a usual `DbContext`.
-This will work directly using injection by Entity Framework automatically.
-Interface `IDbSet<E>` can be implemented by other
-technologies as well, but has the drawback that it would require those implementations
-to reference Entity Framework.
+It targets both .NET Framework and .NET Standard 2.1 and is intended for projects that use classic Entity Framework while exposing provider-neutral `IDomainContainer`, `IEntitySet<T>` and `IEntityQuery<T>` contracts to application logic.
 
-### Total abstraction with `EFDomainContainerAdapter<D>` base class
-Use this base class to define your entities repository when you want total abstraction
-of your entity sets from Entity Framework types. This class adapts a
-domain container of type `D` derived from `EFDomainContainer` which you created as outlined above.
-In your domain container interfaces, define
-entity sets properties using `IEntitySet<E>`
-and implement them using `EFEntitySet<E>` in your domain container derived from `EFDomainContainerAdapter`.
+## Main Features
 
-In either choice, you would typically use a dependency injection framework to create
-the appropriate implementation of domain container. Any implementation would also typically implement
-an interface which defined the entity sets and is derived from `IDomainContainer`.
+- `EFDomainContainer` derives from EF6 `DbContext` and implements `IDomainContainer`.
+- `EFDomainContainerAdapter<T>` adapts an EF6 domain container to a fully provider-neutral domain interface.
+- `EFSet<T>` and `EFQuery<T, Q>` adapt EF6 `DbSet<T>` and queryables to `IEntitySet<T>` and `IEntityQuery<T>`.
+- `EFTranslatingQueryProvider` preserves the query abstraction through standard LINQ composition.
+- `EFQueryTranslatorFactory` maps portable query functions to EF6 `DbFunctions` and wires terminal and shaping adapters.
+- `EFTerminalMethodsAdapter` delegates async terminal methods to EF6 async query APIs.
+- `EFShapingMethodsAdapter` delegates executable query shaping operations such as `Include` and `AsNoTracking` to EF6.
+- SQL Server exception transformers normalize provider errors into portable `DataAccessException` descendants.
 
-This library requires [Grammophone.DataAccess](https://github.com/grammophone/Grammophone.DataAccess) library
-to be in a sibling forder.
+## Usage Shape
+
+Define an EF6 context:
+
+```csharp
+public class EFMusicDomainContainer : EFDomainContainer
+{
+	public DbSet<Artist> Artists { get; set; }
+	public DbSet<Album> Albums { get; set; }
+	public DbSet<Track> Tracks { get; set; }
+	public DbSet<Genre> Genres { get; set; }
+}
+```
+
+Define a provider-neutral domain contract:
+
+```csharp
+public interface IMusicDomainContainer : IDomainContainer
+{
+	IEntitySet<Artist> Artists { get; }
+	IEntitySet<Album> Albums { get; }
+	IEntitySet<Track> Tracks { get; }
+	IEntitySet<Genre> Genres { get; }
+}
+```
+
+Adapt the EF6 context explicitly:
+
+```csharp
+public class EFMusicDomainContainerAdapter :
+	EFDomainContainerAdapter<EFMusicDomainContainer>,
+	IMusicDomainContainer
+{
+	private IEntitySet<Album> albums;
+
+	public IEntitySet<Album> Albums =>
+		albums ??= new EFSet<Album>(this.InnerDomainContainer.Albums, this);
+}
+```
+
+Application logic consumes `IMusicDomainContainer`, not EF6 `DbContext` or `DbSet<T>`.
+
+## Documentation
+
+- [Entity Framework 6 setup](documentation/setup.md)
+
+## Related Projects
+
+- `Grammophone.DataAccess` defines the provider-neutral contracts.
+- `Grammophone.DataAccess.EntityFrameworkCore` provides the EF Core 8 implementation.
