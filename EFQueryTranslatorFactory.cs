@@ -17,6 +17,7 @@ namespace Grammophone.DataAccess.EntityFramework
 
 		private static readonly QueryTranslator QueryTranslator = new QueryTranslator(
 			new EFTerminalMethodsAdapter(),
+			new EFShapingMethodsAdapter(),
 			CreateMethodMappings());
 
 		#endregion
@@ -39,32 +40,6 @@ namespace Grammophone.DataAccess.EntityFramework
 		private static IReadOnlyDictionary<MethodInfo, MethodMapping> CreateMethodMappings()
 		{
 			var mappings = new Dictionary<MethodInfo, MethodMapping>();
-
-			AddMapping(
-				mappings,
-				QueryExtensionMethodInfos.IncludeString,
-				MethodInfoCatalog.GetGenericMethodDefinition(
-					typeof(System.Data.Entity.QueryableExtensions),
-					nameof(System.Data.Entity.QueryableExtensions.Include),
-					typeof(IQueryable<>),
-					typeof(string)));
-
-			AddMapping(
-				mappings,
-				QueryExtensionMethodInfos.IncludeExpression,
-				MethodInfoCatalog.GetGenericMethodDefinition(
-					typeof(System.Data.Entity.QueryableExtensions),
-					nameof(System.Data.Entity.QueryableExtensions.Include),
-					typeof(IQueryable<>),
-					typeof(Expression<>)));
-
-			AddMapping(
-				mappings,
-				QueryExtensionMethodInfos.AsNoTracking,
-				MethodInfoCatalog.GetGenericMethodDefinition(
-					typeof(System.Data.Entity.QueryableExtensions),
-					nameof(System.Data.Entity.QueryableExtensions.AsNoTracking),
-					typeof(IQueryable<>)));
 
 			AddMapping(mappings, QueryFunctionsMethodInfos.Like, GetDbFunction(nameof(DbFunctions.Like), typeof(string), typeof(string)));
 			AddMapping(mappings, QueryFunctionsMethodInfos.LikeWithEscape, GetDbFunction(nameof(DbFunctions.Like), typeof(string), typeof(string), typeof(string)));
