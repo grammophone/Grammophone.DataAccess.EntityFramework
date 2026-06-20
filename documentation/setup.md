@@ -77,6 +77,12 @@ var album = await musicDomainContainer.Albums
 
 EF6 receives native `Include`, `AsNoTracking`, `DbFunctions` and async terminal calls through the adapter system.
 
+## Set-Based Mutations
+
+The vanilla EF6 implementation does not include set-based mutation support. Calls such as `ExecuteDeleteAsync` and `ExecuteUpdateAsync` throw unless a provider extension supplies an implementation.
+
+Use the optional `Grammophone.DataAccess.EntityFramework.Plus` package for EF6 set-based delete and update operations backed by Entity Framework Plus.
+
 ## SQL Server Exception Translation
 
 Set an exception transformer when SQL Server errors should be normalized:
