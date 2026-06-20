@@ -18,6 +18,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		private static readonly QueryTranslator QueryTranslator = new QueryTranslator(
 			new EFTerminalMethodsAdapter(),
 			new EFShapingMethodsAdapter(),
+			new SetOperationMethodsAdapter(),
 			CreateMethodMappings());
 
 		#endregion
