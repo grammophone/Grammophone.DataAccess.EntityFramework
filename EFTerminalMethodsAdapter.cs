@@ -150,6 +150,14 @@ namespace Grammophone.DataAccess.EntityFramework
 			=> System.Data.Entity.QueryableExtensions.ToListAsync(query, cancellationToken);
 
 		/// <inheritdoc/>
+		public override Task<Dictionary<TKey, T>> ToDictionaryAsync<T, TKey>(IQueryable<T> query, System.Func<T, TKey> keySelector)
+			=> ToDictionaryAsync(query, keySelector, default(CancellationToken));
+
+		/// <inheritdoc/>
+		public override Task<Dictionary<TKey, T>> ToDictionaryAsync<T, TKey>(IQueryable<T> query, System.Func<T, TKey> keySelector, CancellationToken cancellationToken)
+			=> System.Data.Entity.QueryableExtensions.ToDictionaryAsync(query, keySelector, cancellationToken);
+
+		/// <inheritdoc/>
 		public override Task<T> MinAsync<T>(IQueryable<T> query)
 			=> MinAsync(query, default(CancellationToken));
 
