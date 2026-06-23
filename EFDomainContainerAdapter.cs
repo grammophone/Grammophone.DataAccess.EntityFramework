@@ -98,6 +98,15 @@ namespace Grammophone.DataAccess.EntityFramework
 		}
 
 		/// <summary>
+		/// Optional exception transformer used by the adapted container.
+		/// </summary>
+		public IExceptionTransformer ExceptionTransformer
+		{
+			get => this.InnerDomainContainer.ExceptionTransformer;
+			set => this.InnerDomainContainer.ExceptionTransformer = value;
+		}
+
+		/// <summary>
 		/// The transaction behavior.
 		/// </summary>
 		public TransactionMode TransactionMode
