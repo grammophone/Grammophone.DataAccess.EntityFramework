@@ -65,6 +65,7 @@ namespace Grammophone.DataAccess.EntityFramework
 			AddDateTimeAddMapping(mappings, QueryFunctionsMethodInfos.AddDays, nameof(DbFunctions.AddDays));
 			AddDateTimeAddMapping(mappings, QueryFunctionsMethodInfos.AddMonths, nameof(DbFunctions.AddMonths));
 			AddDateTimeAddMapping(mappings, QueryFunctionsMethodInfos.AddYears, nameof(DbFunctions.AddYears));
+			AddMapping(mappings, QueryFunctionsMethodInfos.CreateDateTime, GetDbFunction(nameof(DbFunctions.CreateDateTime), typeof(int?), typeof(int?), typeof(int?), typeof(int?), typeof(int?), typeof(double?)));
 
 			return mappings;
 		}
