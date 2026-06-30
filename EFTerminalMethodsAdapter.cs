@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -14,11 +15,11 @@ namespace Grammophone.DataAccess.EntityFramework
 		#region Public methods
 
 		/// <inheritdoc/>
-		public override Task<bool> AllAsync<T>(IQueryable<T> query, Expression<System.Func<T, bool>> predicate)
+		public override Task<bool> AllAsync<T>(IQueryable<T> query, Expression<Func<T, bool>> predicate)
 			=> AllAsync(query, predicate, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<bool> AllAsync<T>(IQueryable<T> query, Expression<System.Func<T, bool>> predicate, CancellationToken cancellationToken)
+		public override Task<bool> AllAsync<T>(IQueryable<T> query, Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.AllAsync(query, predicate, cancellationToken);
 
 		/// <inheritdoc/>
@@ -30,11 +31,11 @@ namespace Grammophone.DataAccess.EntityFramework
 			=> System.Data.Entity.QueryableExtensions.AnyAsync(query, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<bool> AnyAsync<T>(IQueryable<T> query, Expression<System.Func<T, bool>> predicate)
+		public override Task<bool> AnyAsync<T>(IQueryable<T> query, Expression<Func<T, bool>> predicate)
 			=> AnyAsync(query, predicate, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<bool> AnyAsync<T>(IQueryable<T> query, Expression<System.Func<T, bool>> predicate, CancellationToken cancellationToken)
+		public override Task<bool> AnyAsync<T>(IQueryable<T> query, Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.AnyAsync(query, predicate, cancellationToken);
 
 		/// <inheritdoc/>
@@ -46,11 +47,11 @@ namespace Grammophone.DataAccess.EntityFramework
 			=> System.Data.Entity.QueryableExtensions.CountAsync(query, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<int> CountAsync<T>(IQueryable<T> query, Expression<System.Func<T, bool>> predicate)
+		public override Task<int> CountAsync<T>(IQueryable<T> query, Expression<Func<T, bool>> predicate)
 			=> CountAsync(query, predicate, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<int> CountAsync<T>(IQueryable<T> query, Expression<System.Func<T, bool>> predicate, CancellationToken cancellationToken)
+		public override Task<int> CountAsync<T>(IQueryable<T> query, Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.CountAsync(query, predicate, cancellationToken);
 
 		/// <inheritdoc/>
@@ -62,11 +63,11 @@ namespace Grammophone.DataAccess.EntityFramework
 			=> System.Data.Entity.QueryableExtensions.LongCountAsync(query, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<long> LongCountAsync<T>(IQueryable<T> query, Expression<System.Func<T, bool>> predicate)
+		public override Task<long> LongCountAsync<T>(IQueryable<T> query, Expression<Func<T, bool>> predicate)
 			=> LongCountAsync(query, predicate, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<long> LongCountAsync<T>(IQueryable<T> query, Expression<System.Func<T, bool>> predicate, CancellationToken cancellationToken)
+		public override Task<long> LongCountAsync<T>(IQueryable<T> query, Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.LongCountAsync(query, predicate, cancellationToken);
 
 		/// <inheritdoc/>
@@ -78,11 +79,11 @@ namespace Grammophone.DataAccess.EntityFramework
 			=> System.Data.Entity.QueryableExtensions.FirstAsync(query, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<T> FirstAsync<T>(IQueryable<T> query, Expression<System.Func<T, bool>> predicate)
+		public override Task<T> FirstAsync<T>(IQueryable<T> query, Expression<Func<T, bool>> predicate)
 			=> FirstAsync(query, predicate, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<T> FirstAsync<T>(IQueryable<T> query, Expression<System.Func<T, bool>> predicate, CancellationToken cancellationToken)
+		public override Task<T> FirstAsync<T>(IQueryable<T> query, Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.FirstAsync(query, predicate, cancellationToken);
 
 		/// <inheritdoc/>
@@ -94,11 +95,11 @@ namespace Grammophone.DataAccess.EntityFramework
 			=> System.Data.Entity.QueryableExtensions.FirstOrDefaultAsync(query, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<T> FirstOrDefaultAsync<T>(IQueryable<T> query, Expression<System.Func<T, bool>> predicate)
+		public override Task<T> FirstOrDefaultAsync<T>(IQueryable<T> query, Expression<Func<T, bool>> predicate)
 			=> FirstOrDefaultAsync(query, predicate, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<T> FirstOrDefaultAsync<T>(IQueryable<T> query, Expression<System.Func<T, bool>> predicate, CancellationToken cancellationToken)
+		public override Task<T> FirstOrDefaultAsync<T>(IQueryable<T> query, Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.FirstOrDefaultAsync(query, predicate, cancellationToken);
 
 		/// <inheritdoc/>
@@ -110,11 +111,11 @@ namespace Grammophone.DataAccess.EntityFramework
 			=> System.Data.Entity.QueryableExtensions.SingleAsync(query, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<T> SingleAsync<T>(IQueryable<T> query, Expression<System.Func<T, bool>> predicate)
+		public override Task<T> SingleAsync<T>(IQueryable<T> query, Expression<Func<T, bool>> predicate)
 			=> SingleAsync(query, predicate, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<T> SingleAsync<T>(IQueryable<T> query, Expression<System.Func<T, bool>> predicate, CancellationToken cancellationToken)
+		public override Task<T> SingleAsync<T>(IQueryable<T> query, Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.SingleAsync(query, predicate, cancellationToken);
 
 		/// <inheritdoc/>
@@ -126,11 +127,11 @@ namespace Grammophone.DataAccess.EntityFramework
 			=> System.Data.Entity.QueryableExtensions.SingleOrDefaultAsync(query, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<T> SingleOrDefaultAsync<T>(IQueryable<T> query, Expression<System.Func<T, bool>> predicate)
+		public override Task<T> SingleOrDefaultAsync<T>(IQueryable<T> query, Expression<Func<T, bool>> predicate)
 			=> SingleOrDefaultAsync(query, predicate, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<T> SingleOrDefaultAsync<T>(IQueryable<T> query, Expression<System.Func<T, bool>> predicate, CancellationToken cancellationToken)
+		public override Task<T> SingleOrDefaultAsync<T>(IQueryable<T> query, Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.SingleOrDefaultAsync(query, predicate, cancellationToken);
 
 		/// <inheritdoc/>
@@ -150,12 +151,20 @@ namespace Grammophone.DataAccess.EntityFramework
 			=> System.Data.Entity.QueryableExtensions.ToListAsync(query, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<Dictionary<TKey, T>> ToDictionaryAsync<T, TKey>(IQueryable<T> query, System.Func<T, TKey> keySelector)
+		public override Task<Dictionary<TKey, T>> ToDictionaryAsync<T, TKey>(IQueryable<T> query, Func<T, TKey> keySelector)
 			=> ToDictionaryAsync(query, keySelector, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<Dictionary<TKey, T>> ToDictionaryAsync<T, TKey>(IQueryable<T> query, System.Func<T, TKey> keySelector, CancellationToken cancellationToken)
+		public override Task<Dictionary<TKey, T>> ToDictionaryAsync<T, TKey>(IQueryable<T> query, Func<T, TKey> keySelector, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.ToDictionaryAsync(query, keySelector, cancellationToken);
+
+		/// <inheritdoc/>
+		public override Task<Dictionary<TKey, TValue>> ToDictionaryAsync<T, TKey, TValue>(IQueryable<T> query, Func<T, TKey> keySelector, Func<T, TValue> valueSelector)
+			=> ToDictionaryAsync(query, keySelector, valueSelector, default(CancellationToken));
+
+		/// <inheritdoc/>
+		public override Task<Dictionary<TKey, TValue>> ToDictionaryAsync<T, TKey, TValue>(IQueryable<T> query, Func<T, TKey> keySelector, Func<T, TValue> valueSelector, CancellationToken cancellationToken)
+			=> System.Data.Entity.QueryableExtensions.ToDictionaryAsync(query, keySelector, valueSelector, cancellationToken);
 
 		/// <inheritdoc/>
 		public override Task<T> MinAsync<T>(IQueryable<T> query)
@@ -166,11 +175,11 @@ namespace Grammophone.DataAccess.EntityFramework
 			=> System.Data.Entity.QueryableExtensions.MinAsync(query, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<TResult> MinAsync<T, TResult>(IQueryable<T> query, Expression<System.Func<T, TResult>> selector)
+		public override Task<TResult> MinAsync<T, TResult>(IQueryable<T> query, Expression<Func<T, TResult>> selector)
 			=> MinAsync(query, selector, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<TResult> MinAsync<T, TResult>(IQueryable<T> query, Expression<System.Func<T, TResult>> selector, CancellationToken cancellationToken)
+		public override Task<TResult> MinAsync<T, TResult>(IQueryable<T> query, Expression<Func<T, TResult>> selector, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.MinAsync(query, selector, cancellationToken);
 
 		/// <inheritdoc/>
@@ -182,11 +191,11 @@ namespace Grammophone.DataAccess.EntityFramework
 			=> System.Data.Entity.QueryableExtensions.MaxAsync(query, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<TResult> MaxAsync<T, TResult>(IQueryable<T> query, Expression<System.Func<T, TResult>> selector)
+		public override Task<TResult> MaxAsync<T, TResult>(IQueryable<T> query, Expression<Func<T, TResult>> selector)
 			=> MaxAsync(query, selector, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<TResult> MaxAsync<T, TResult>(IQueryable<T> query, Expression<System.Func<T, TResult>> selector, CancellationToken cancellationToken)
+		public override Task<TResult> MaxAsync<T, TResult>(IQueryable<T> query, Expression<Func<T, TResult>> selector, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.MaxAsync(query, selector, cancellationToken);
 
 		/// <inheritdoc/>
@@ -270,83 +279,83 @@ namespace Grammophone.DataAccess.EntityFramework
 			=> System.Data.Entity.QueryableExtensions.SumAsync(query, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<int> SumAsync<T>(IQueryable<T> query, Expression<System.Func<T, int>> selector)
+		public override Task<int> SumAsync<T>(IQueryable<T> query, Expression<Func<T, int>> selector)
 			=> SumAsync(query, selector, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<int> SumAsync<T>(IQueryable<T> query, Expression<System.Func<T, int>> selector, CancellationToken cancellationToken)
+		public override Task<int> SumAsync<T>(IQueryable<T> query, Expression<Func<T, int>> selector, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.SumAsync(query, selector, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<int?> SumAsync<T>(IQueryable<T> query, Expression<System.Func<T, int?>> selector)
+		public override Task<int?> SumAsync<T>(IQueryable<T> query, Expression<Func<T, int?>> selector)
 			=> SumAsync(query, selector, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<int?> SumAsync<T>(IQueryable<T> query, Expression<System.Func<T, int?>> selector, CancellationToken cancellationToken)
+		public override Task<int?> SumAsync<T>(IQueryable<T> query, Expression<Func<T, int?>> selector, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.SumAsync(query, selector, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<long> SumAsync<T>(IQueryable<T> query, Expression<System.Func<T, long>> selector)
+		public override Task<long> SumAsync<T>(IQueryable<T> query, Expression<Func<T, long>> selector)
 			=> SumAsync(query, selector, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<long> SumAsync<T>(IQueryable<T> query, Expression<System.Func<T, long>> selector, CancellationToken cancellationToken)
+		public override Task<long> SumAsync<T>(IQueryable<T> query, Expression<Func<T, long>> selector, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.SumAsync(query, selector, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<long?> SumAsync<T>(IQueryable<T> query, Expression<System.Func<T, long?>> selector)
+		public override Task<long?> SumAsync<T>(IQueryable<T> query, Expression<Func<T, long?>> selector)
 			=> SumAsync(query, selector, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<long?> SumAsync<T>(IQueryable<T> query, Expression<System.Func<T, long?>> selector, CancellationToken cancellationToken)
+		public override Task<long?> SumAsync<T>(IQueryable<T> query, Expression<Func<T, long?>> selector, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.SumAsync(query, selector, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<float> SumAsync<T>(IQueryable<T> query, Expression<System.Func<T, float>> selector)
+		public override Task<float> SumAsync<T>(IQueryable<T> query, Expression<Func<T, float>> selector)
 			=> SumAsync(query, selector, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<float> SumAsync<T>(IQueryable<T> query, Expression<System.Func<T, float>> selector, CancellationToken cancellationToken)
+		public override Task<float> SumAsync<T>(IQueryable<T> query, Expression<Func<T, float>> selector, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.SumAsync(query, selector, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<float?> SumAsync<T>(IQueryable<T> query, Expression<System.Func<T, float?>> selector)
+		public override Task<float?> SumAsync<T>(IQueryable<T> query, Expression<Func<T, float?>> selector)
 			=> SumAsync(query, selector, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<float?> SumAsync<T>(IQueryable<T> query, Expression<System.Func<T, float?>> selector, CancellationToken cancellationToken)
+		public override Task<float?> SumAsync<T>(IQueryable<T> query, Expression<Func<T, float?>> selector, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.SumAsync(query, selector, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<double> SumAsync<T>(IQueryable<T> query, Expression<System.Func<T, double>> selector)
+		public override Task<double> SumAsync<T>(IQueryable<T> query, Expression<Func<T, double>> selector)
 			=> SumAsync(query, selector, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<double> SumAsync<T>(IQueryable<T> query, Expression<System.Func<T, double>> selector, CancellationToken cancellationToken)
+		public override Task<double> SumAsync<T>(IQueryable<T> query, Expression<Func<T, double>> selector, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.SumAsync(query, selector, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<double?> SumAsync<T>(IQueryable<T> query, Expression<System.Func<T, double?>> selector)
+		public override Task<double?> SumAsync<T>(IQueryable<T> query, Expression<Func<T, double?>> selector)
 			=> SumAsync(query, selector, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<double?> SumAsync<T>(IQueryable<T> query, Expression<System.Func<T, double?>> selector, CancellationToken cancellationToken)
+		public override Task<double?> SumAsync<T>(IQueryable<T> query, Expression<Func<T, double?>> selector, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.SumAsync(query, selector, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<decimal> SumAsync<T>(IQueryable<T> query, Expression<System.Func<T, decimal>> selector)
+		public override Task<decimal> SumAsync<T>(IQueryable<T> query, Expression<Func<T, decimal>> selector)
 			=> SumAsync(query, selector, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<decimal> SumAsync<T>(IQueryable<T> query, Expression<System.Func<T, decimal>> selector, CancellationToken cancellationToken)
+		public override Task<decimal> SumAsync<T>(IQueryable<T> query, Expression<Func<T, decimal>> selector, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.SumAsync(query, selector, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<decimal?> SumAsync<T>(IQueryable<T> query, Expression<System.Func<T, decimal?>> selector)
+		public override Task<decimal?> SumAsync<T>(IQueryable<T> query, Expression<Func<T, decimal?>> selector)
 			=> SumAsync(query, selector, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<decimal?> SumAsync<T>(IQueryable<T> query, Expression<System.Func<T, decimal?>> selector, CancellationToken cancellationToken)
+		public override Task<decimal?> SumAsync<T>(IQueryable<T> query, Expression<Func<T, decimal?>> selector, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.SumAsync(query, selector, cancellationToken);
 
 		/// <inheritdoc/>
@@ -430,83 +439,83 @@ namespace Grammophone.DataAccess.EntityFramework
 			=> System.Data.Entity.QueryableExtensions.AverageAsync(query, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<double> AverageAsync<T>(IQueryable<T> query, Expression<System.Func<T, int>> selector)
+		public override Task<double> AverageAsync<T>(IQueryable<T> query, Expression<Func<T, int>> selector)
 			=> AverageAsync(query, selector, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<double> AverageAsync<T>(IQueryable<T> query, Expression<System.Func<T, int>> selector, CancellationToken cancellationToken)
+		public override Task<double> AverageAsync<T>(IQueryable<T> query, Expression<Func<T, int>> selector, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.AverageAsync(query, selector, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<double?> AverageAsync<T>(IQueryable<T> query, Expression<System.Func<T, int?>> selector)
+		public override Task<double?> AverageAsync<T>(IQueryable<T> query, Expression<Func<T, int?>> selector)
 			=> AverageAsync(query, selector, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<double?> AverageAsync<T>(IQueryable<T> query, Expression<System.Func<T, int?>> selector, CancellationToken cancellationToken)
+		public override Task<double?> AverageAsync<T>(IQueryable<T> query, Expression<Func<T, int?>> selector, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.AverageAsync(query, selector, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<double> AverageAsync<T>(IQueryable<T> query, Expression<System.Func<T, long>> selector)
+		public override Task<double> AverageAsync<T>(IQueryable<T> query, Expression<Func<T, long>> selector)
 			=> AverageAsync(query, selector, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<double> AverageAsync<T>(IQueryable<T> query, Expression<System.Func<T, long>> selector, CancellationToken cancellationToken)
+		public override Task<double> AverageAsync<T>(IQueryable<T> query, Expression<Func<T, long>> selector, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.AverageAsync(query, selector, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<double?> AverageAsync<T>(IQueryable<T> query, Expression<System.Func<T, long?>> selector)
+		public override Task<double?> AverageAsync<T>(IQueryable<T> query, Expression<Func<T, long?>> selector)
 			=> AverageAsync(query, selector, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<double?> AverageAsync<T>(IQueryable<T> query, Expression<System.Func<T, long?>> selector, CancellationToken cancellationToken)
+		public override Task<double?> AverageAsync<T>(IQueryable<T> query, Expression<Func<T, long?>> selector, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.AverageAsync(query, selector, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<float> AverageAsync<T>(IQueryable<T> query, Expression<System.Func<T, float>> selector)
+		public override Task<float> AverageAsync<T>(IQueryable<T> query, Expression<Func<T, float>> selector)
 			=> AverageAsync(query, selector, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<float> AverageAsync<T>(IQueryable<T> query, Expression<System.Func<T, float>> selector, CancellationToken cancellationToken)
+		public override Task<float> AverageAsync<T>(IQueryable<T> query, Expression<Func<T, float>> selector, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.AverageAsync(query, selector, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<float?> AverageAsync<T>(IQueryable<T> query, Expression<System.Func<T, float?>> selector)
+		public override Task<float?> AverageAsync<T>(IQueryable<T> query, Expression<Func<T, float?>> selector)
 			=> AverageAsync(query, selector, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<float?> AverageAsync<T>(IQueryable<T> query, Expression<System.Func<T, float?>> selector, CancellationToken cancellationToken)
+		public override Task<float?> AverageAsync<T>(IQueryable<T> query, Expression<Func<T, float?>> selector, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.AverageAsync(query, selector, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<double> AverageAsync<T>(IQueryable<T> query, Expression<System.Func<T, double>> selector)
+		public override Task<double> AverageAsync<T>(IQueryable<T> query, Expression<Func<T, double>> selector)
 			=> AverageAsync(query, selector, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<double> AverageAsync<T>(IQueryable<T> query, Expression<System.Func<T, double>> selector, CancellationToken cancellationToken)
+		public override Task<double> AverageAsync<T>(IQueryable<T> query, Expression<Func<T, double>> selector, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.AverageAsync(query, selector, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<double?> AverageAsync<T>(IQueryable<T> query, Expression<System.Func<T, double?>> selector)
+		public override Task<double?> AverageAsync<T>(IQueryable<T> query, Expression<Func<T, double?>> selector)
 			=> AverageAsync(query, selector, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<double?> AverageAsync<T>(IQueryable<T> query, Expression<System.Func<T, double?>> selector, CancellationToken cancellationToken)
+		public override Task<double?> AverageAsync<T>(IQueryable<T> query, Expression<Func<T, double?>> selector, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.AverageAsync(query, selector, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<decimal> AverageAsync<T>(IQueryable<T> query, Expression<System.Func<T, decimal>> selector)
+		public override Task<decimal> AverageAsync<T>(IQueryable<T> query, Expression<Func<T, decimal>> selector)
 			=> AverageAsync(query, selector, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<decimal> AverageAsync<T>(IQueryable<T> query, Expression<System.Func<T, decimal>> selector, CancellationToken cancellationToken)
+		public override Task<decimal> AverageAsync<T>(IQueryable<T> query, Expression<Func<T, decimal>> selector, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.AverageAsync(query, selector, cancellationToken);
 
 		/// <inheritdoc/>
-		public override Task<decimal?> AverageAsync<T>(IQueryable<T> query, Expression<System.Func<T, decimal?>> selector)
+		public override Task<decimal?> AverageAsync<T>(IQueryable<T> query, Expression<Func<T, decimal?>> selector)
 			=> AverageAsync(query, selector, default(CancellationToken));
 
 		/// <inheritdoc/>
-		public override Task<decimal?> AverageAsync<T>(IQueryable<T> query, Expression<System.Func<T, decimal?>> selector, CancellationToken cancellationToken)
+		public override Task<decimal?> AverageAsync<T>(IQueryable<T> query, Expression<Func<T, decimal?>> selector, CancellationToken cancellationToken)
 			=> System.Data.Entity.QueryableExtensions.AverageAsync(query, selector, cancellationToken);
 
 		#endregion
