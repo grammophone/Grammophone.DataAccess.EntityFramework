@@ -53,6 +53,9 @@ namespace Grammophone.DataAccess.EntityFramework
 		#region IEntityQuery<E> Members
 
 		/// <inheritdoc/>
+		IQueryable IEntityQuery.NativeQuery => this.NativeQuery;
+
+		/// <inheritdoc/>
 		public IDomainContainer DomainContainer { get; }
 
 		/// <inheritdoc/>
