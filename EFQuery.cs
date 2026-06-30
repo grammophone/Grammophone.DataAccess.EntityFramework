@@ -52,14 +52,13 @@ namespace Grammophone.DataAccess.EntityFramework
 
 		#region IEntityQuery<E> Members
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// The Entity Framework 6 backing query.
+		/// </summary>
 		IQueryable IEntityQuery.NativeQuery => this.NativeQuery;
 
 		/// <inheritdoc/>
 		public IDomainContainer DomainContainer { get; }
-
-		/// <inheritdoc/>
-		public IQueryProvider NativeProvider => NativeQuery.Provider;
 
 		/// <summary>
 		/// The translating provider associated with this query.
@@ -68,7 +67,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		{
 			get
 			{
-				return translatingProvider ??= new EFTranslatingQueryProvider(this.NativeProvider, this.DomainContainer);
+				return translatingProvider ??= new EFTranslatingQueryProvider(this.NativeQuery.Provider, this.DomainContainer);
 			}
 		}
 
@@ -80,7 +79,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		{
 			get
 			{
-				return translatingProvider ??= new EFTranslatingQueryProvider(this.NativeProvider, this.DomainContainer);
+				return this.TranslatingProvider;
 			}
 		}
 
@@ -90,9 +89,9 @@ namespace Grammophone.DataAccess.EntityFramework
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
-			var translatedExpression = this.TranslatingProvider.TranslateExpression(NativeQuery.Expression);
+			var translatedExpression = this.TranslatingProvider.TranslateExpression(this.NativeQuery.Expression);
 
-			var translatedQuery = this.NativeProvider.CreateQuery(translatedExpression);
+			var translatedQuery = this.NativeQuery.Provider.CreateQuery(translatedExpression);
 
 			return translatedQuery.GetEnumerator();
 		}
@@ -136,7 +135,7 @@ namespace Grammophone.DataAccess.EntityFramework
 		{
 			var translatedExpression = this.TranslatingProvider.TranslateExpression(NativeQuery.Expression);
 
-			var translatedQuery = this.NativeProvider.CreateQuery<E>(translatedExpression);
+			var translatedQuery = this.NativeQuery.Provider.CreateQuery<E>(translatedExpression);
 
 			return translatedQuery.GetEnumerator();
 		}
