@@ -37,8 +37,15 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// <see cref="IDomainContainer.SaveChanges"/> is called.
 		/// </summary>
 		/// <param name="entity">The entity to add.</param>
+		/// <remarks>
+		/// Adding an entity which is already tracked changes nothing.
+		/// </remarks>
 		public void Add(E entity)
 		{
+			if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+			if (!IsAddable(entity)) return;
+
 			NativeQuery.Add(entity);
 		}
 
@@ -49,9 +56,14 @@ namespace Grammophone.DataAccess.EntityFramework
 		/// when <see cref="IDomainContainer.SaveChanges"/> is called.
 		/// </summary>
 		/// <param name="entities"></param>
+		/// <remarks>
+		/// Entities which are already tracked are left alone.
+		/// </remarks>
 		public void AddRange(IEnumerable<E> entities)
 		{
-			NativeQuery.AddRange(entities);
+			if (entities == null) throw new ArgumentNullException(nameof(entities));
+
+			NativeQuery.AddRange(entities.Where(IsAddable));
 		}
 
 		/// <summary>
@@ -133,6 +145,36 @@ namespace Grammophone.DataAccess.EntityFramework
 		public void RemoveRange(IEnumerable<E> entities)
 		{
 			NativeQuery.RemoveRange(entities);
+		}
+
+		#endregion
+
+		#region Private methods
+
+		/// <summary>
+		/// Determines whether an entity still has to be handed to the underlying set in order to be added.
+		/// </summary>
+		/// <param name="entity">The entity being added.</param>
+		/// <returns>Returns true when the entity is not tracked yet.</returns>
+		/// <exception cref="DataAccessException">Thrown when the entity is being deleted.</exception>
+		/// <remarks>
+		/// Adding an entity which is already tracked must not change anything. With nested transaction scopes
+		/// an entity may well have been stored by an inner commit before control returns to the caller which
+		/// adds it, and that caller has no way of knowing. Entity Framework would otherwise store it a second
+		/// time under a fresh key, silently leaving a duplicate row behind and moving the entity at hand onto it.
+		/// </remarks>
+		private bool IsAddable(E entity)
+		{
+			var state = this.DomainContainer.Entry(entity).State;
+
+			if (state == TrackingState.Deleted)
+			{
+				throw new DataAccessException(
+					$"Cannot add an entity of type '{typeof(E).FullName}' while it is being deleted: " +
+					"whether that abandons the deletion or stores a second entity is not defined.");
+			}
+
+			return state == TrackingState.Detached;
 		}
 
 		#endregion
